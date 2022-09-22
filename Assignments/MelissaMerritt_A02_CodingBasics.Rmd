@@ -70,14 +70,15 @@ passing_score <- c(FALSE, FALSE, TRUE, TRUE, TRUE) #logical vector
 
 #I was able to check the vector types using the function typeof() with the vector name inserted.
 
+Student_Test_Scores <- data_frame("Student Names"=student_names, "Test Scores (%)"=test_scores, "Passed the Test"=passing_score)
 
-
+#To create the data frame for the different vectors, I used the function data_frame() with the vector names included in the parentheses. I was able to assign names to the columns which represent the vector values. I assigned a name to the data frame that represented what the data is conveying. 
 
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: The data frame is different from a matrix because it is storing different types of data. This is evident when we look at the different vector classifications. The data in a data frame is tabular. Data in a matrix must all be the same data type (i.e. whether students passed or not).
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. 
 
