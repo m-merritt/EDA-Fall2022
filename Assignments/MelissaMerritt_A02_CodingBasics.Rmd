@@ -86,8 +86,22 @@ Student_Test_Scores <- data_frame("Student Names"=student_names, "Test Scores (%
 
 ```{r}
 
+x=test_scores
+if(x > 50){
+  print("TRUE")
+}else if (x < 50){
+  print("FALSE")
+}else {
+  print("TRUE")
+}
+
+
+ifelse(test_scores >= 50, TRUE, FALSE)
+
+#I was able to use the function ifelse to print the results of test scores passed on if they were a passing grade or not. 
+
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer:The option of ifelse() worked because I was able to use the vector directly in the function. This allowed me to apply the function to the vector directly instead of having to assign the funtion. 'if' and 'else' seems to be better when you are input different values, but you would need to put each value from the vector in separately. 
