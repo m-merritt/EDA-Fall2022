@@ -1,9 +1,11 @@
 ---
-title: "Assignment 2: Coding Basics"
+title: 'Assignment 2: Coding Basics'
 author: "Melissa Merritt"
-output: pdf_document
+output:
+  word_document: default
+  pdf_document: default
 geometry: margin=2.54cm
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -29,8 +31,14 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 3.  Ask R to determine whether the mean is greater than the median.
 
 4.  Insert comments in your code to describe what you are doing.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80),tidy = TRUE)
+
+```
+
 
 ```{r}
+
 seq(1, 100, 4) 
 
 #The sequence function allows you to create a sequence of numbers. The 4 at the end shows that I want the sequence to count by 4s. 
@@ -46,7 +54,7 @@ median(hundred_sequence)
 
 mean(hundred_sequence) > median(hundred_sequence)
 
-#Here I am asking R if the mean of the sequence is greater than the median of the sequence. 
+#Here, I am asking R if the mean of the sequence is greater than the median of the sequence. 
 ```
 
 ## Basics Day 2
@@ -70,9 +78,11 @@ passing_score <- c(FALSE, FALSE, TRUE, TRUE, TRUE) #logical vector
 
 #I was able to check the vector types using the function typeof() with the vector name inserted.
 
-Student_Test_Scores <- data_frame("Student Names"=student_names, "Test Scores (%)"=test_scores, "Passed the Test"=passing_score)
+Student_Test_Scores <- data.frame("Student Names"=student_names, "Test Scores (%)"=test_scores, "Passed the Test"=passing_score)
 
-#To create the data frame for the different vectors, I used the function data_frame() with the vector names included in the parentheses. I was able to assign names to the columns which represent the vector values. I assigned a name to the data frame that represented what the data is conveying. 
+#To create the data frame for the different vectors, I used the function data.frame() with the vector names included in the parentheses. I was able to assign names to the columns which represent the vector values. I assigned a name to the data frame that represented what the data is conveying. 
+
+Student_Test_Scores
 
 ```
 
@@ -86,16 +96,6 @@ Student_Test_Scores <- data_frame("Student Names"=student_names, "Test Scores (%
 
 ```{r}
 
-x=test_scores
-if(x > 50){
-  print("TRUE")
-}else if (x < 50){
-  print("FALSE")
-}else {
-  print("TRUE")
-}
-
-
 ifelse(test_scores >= 50, TRUE, FALSE)
 
 #I was able to use the function ifelse to print the results of test scores passed on if they were a passing grade or not. 
@@ -104,4 +104,4 @@ ifelse(test_scores >= 50, TRUE, FALSE)
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:The option of ifelse() worked because I was able to use the vector directly in the function. This allowed me to apply the function to the vector directly instead of having to assign the funtion. 'if' and 'else' seems to be better when you are input different values, but you would need to put each value from the vector in separately. 
+> Answer: The option of ifelse() worked because I was able to use the vector in the function. This allowed me to apply the function to the vector directly instead of having to assign the funtion. 'if' and 'else' seems to be better when you are inputing different values, but you would need to put each value from the vector in separately. It does not seem to be compatible with applying the function to the entire vector. 
