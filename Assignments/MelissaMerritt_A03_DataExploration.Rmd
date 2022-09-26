@@ -59,6 +59,10 @@ Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", strin
 5.  What are the dimensions of the dataset?
 
 ```{r}
+dim(Neonics)
+dim(Litter)
+
+#the data dimensions (dim() function) gives you the number of rows and columns in the data. 
 
 ```
 
