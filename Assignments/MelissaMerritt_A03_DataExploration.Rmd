@@ -30,7 +30,7 @@ getwd()
 
 library(tidyverse) #the library() function allows me to add the tidyverse package.
 
-ECOTOX.neonicotinoid.dataset
+ECOTOX.neonicotinoid.dataset <- 
 
 ```
 
