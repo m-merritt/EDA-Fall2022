@@ -25,12 +25,15 @@ The completed exercise is due on Sept 30th.
 1.  Check your working directory, load necessary packages (tidyverse), and upload two datasets: the ECOTOX neonicotinoid dataset (ECOTOX_Neonicotinoids_Insects_raw.csv) and the Niwot Ridge NEON dataset for litter and woody debris (NEON_NIWO_Litter_massdata_2018-08_raw.csv). Name these datasets "Neonics" and "Litter", respectively. Be sure to include the subcommand to read strings in as factors.
 
 ```{r,  message = FALSE}
-#This allows me to ensure that my working directory is what I want it to be.
-getwd()
+getwd() #This allows me to ensure that my working directory is what I want it to be.
 
 library(tidyverse) #the library() function allows me to add the tidyverse package.
 
-ECOTOX.neonicotinoid.dataset <- 
+Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv", stringsAsFactors = TRUE)
+
+Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE)
+
+# The commands above allow me to import the data, label the data, and ensure that it is imported # as factors. 
 
 ```
 
