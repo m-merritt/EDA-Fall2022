@@ -41,11 +41,11 @@ Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", strin
 
 2.  The neonicotinoid dataset was collected from the Environmental Protection Agency's ECOTOX Knowledgebase, a database for ecotoxicology research. Neonicotinoids are a class of insecticides used widely in agriculture. The dataset that has been pulled includes all studies published on insects. Why might we be interested in the ecotoxicology of neonicotinoids on insects? Feel free to do a brief internet search if you feel you need more background information.
 
-> Answer:
+> Answer: We would me interested in the ecotoxicology of neonicotinoids because the levels of neonicotinoids in the environment can directly and indirectly effects many different species. Specifically it is important to study the neonicotinoids impact on insects because scientists have been observing a decline in many insect populations due to these pesticides. Pollinators, like bees, are significantly effected by the use of neonicotinoids, and we have already seen the effects that a loss of pollinators can have on an ecosystem. Neonicotinoids are banned in the European union because of the negative effects they have on the environment and people, so we would be interested in studying the ecotoxicology of neonicotinoids on insects because it might lead the US to make decisions to ban it as well.
 
 3.  The Niwot Ridge litter and woody debris dataset was collected from the National Ecological Observatory Network, which collectively includes 81 aquatic and terrestrial sites across 20 ecoclimatic domains. 32 of these sites sample forest litter and woody debris, and we will focus on the Niwot Ridge long-term ecological research (LTER) station in Colorado. Why might we be interested in studying litter and woody debris that falls to the ground in forests? Feel free to do a brief internet search if you feel you need more background information.
 
-> Answer:
+> Answer: One of the main reasons we would be interested in studying litter and woody debris on the ground in forests in the west is to determine wildfire risk. Observing the fuel load on a forest floor can allow you to determine the ignition potentially and flammability of a landscape. This can provide information on how a fire might spread on the ground, and if there are ladder fuels present in the forest, it can be a great determiner of how fire might spread into the canopy. Another reason to study litter and woody debris on the forest floor is to determine the decomposition rates of a forest which can inform forest health. 
 
 4.  How is litter and woody debris sampled as part of the NEON network? Read the NEON_Litterfall_UserGuide.pdf document to learn more. List three pieces of salient information about the sampling methods here:
 
@@ -60,7 +60,6 @@ Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", strin
 
 ```{r}
 dim(Neonics)
-dim(Litter)
 
 #the data dimensions (dim() function) gives you the number of rows and columns in the data. 
 
@@ -70,6 +69,10 @@ dim(Litter)
 
 ```{r}
 
+summary(Neonics$"Effect") 
+
+# I am able to find the information for a single column using $
+
 ```
 
 > Answer:
@@ -78,23 +81,30 @@ dim(Litter)
 
 ```{r}
 
+summary(Neonics$Species.Common.Name, 7)
+
+#I chose to calculate the seven most commonly studies species because the other category does not give us much information. 
+
 ```
 
-> Answer:
+> Answer: The six most commonly studied species of insects are all pollinators. As I mentioned before, pollinators are inordinately impacted by pesticides because of their relationships with plants. Pollinators are also a key species in the ecosystem because many plants rely on them to reproduce, and many other species of insects and animals rely on these plants for survival.  
 
 8.  Concentrations are always a numeric value. What is the class of Conc.1..Author. in the dataset, and why is it not numeric?
 
 ```{r}
 
+class(Neonics$Conc.1..Author.)
+
 ```
 
-> Answer:
+> Answer: The class of Conc.1..Author is defined as a factor because it is a discrete value. 
 
 ## Explore your data graphically (Neonics)
 
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r}
+
 
 ```
 
