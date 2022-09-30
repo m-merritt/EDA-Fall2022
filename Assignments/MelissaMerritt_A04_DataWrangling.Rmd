@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling"
-author: "Student Name"
+author: "Melissa Merritt"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -32,9 +32,44 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 2. Explore the dimensions, column names, and structure of the datasets. 
 
 ```{r, message = FALSE}
-#1
+#1 
+getwd()
+
+# getwd() allows me to check my working directory. I needed to change it in the knit options to project directory, and now it is correct.
+
+library(tidyverse)
+library(lubridate)
+
+O3_NC2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
+PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
+
+# While importing the data files, I am able to name them in a way that makes them easy to use and recognize.
+
 
 #2
+dim(O3_NC2018)
+dim(O3_NC2019)
+dim(PM25_NC2018)
+dim(PM25_NC2019)
+
+# dim() allows me to check the columns and rows for each data set.
+
+colnames(O3_NC2018)
+colnames(O3_NC2019)
+colnames(PM25_NC2018)
+colnames(PM25_NC2019)
+
+# the colnames () function allows me to see the names of each column in the data set. 
+
+str(O3_NC2018)
+str(O3_NC2019)
+str(PM25_NC2018)
+str(PM25_NC2019)
+
+# The str() function allows me to check the structure of a data set. 
+
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -45,6 +80,8 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 
 ```{r}
 #3
+
+
 
 #4
 
