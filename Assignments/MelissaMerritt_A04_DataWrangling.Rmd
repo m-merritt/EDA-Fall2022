@@ -80,14 +80,38 @@ str(PM25_NC2019)
 
 ```{r}
 #3
+O3_NC2018$Date <- as.Date(O3_NC2018$Date, format = "%m/%d/%Y")
+O3_NC2019$Date <- as.Date(O3_NC2019$Date, format = "%m/%d/%Y")
+PM25_NC2018$Date <- as.Date(PM25_NC2018$Date, format = "%m/%d/%Y")
+PM25_NC2019$Date <- as.Date(PM25_NC2019$Date, format = "%m/%d/%Y")
 
+class(O3_NC2018$Date)
+class(O3_NC2019$Date)
+class(PM25_NC2018$Date)
+class(PM25_NC2019$Date)
 
+# I was able to use the as.Date() function to change the date column to "date". I was able to check each of the classifications with the class() function.
 
 #4
+O3_NC2018_select <- select(O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+O3_NC2019_select <- select(O3_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+PM25_NC2018_select <- select(PM25_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+PM25_NC2019_select <- select(PM25_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+
+# Using the select() function I am able to create a new data file with just the pertinent information. 
 
 #5
 
+PM25_NC2018_select$AQS_PARAMETER_DESC <- "PM2.5"
+PM25_NC2019_select$AQS_PARAMETER_DESC <- "PM2.5"
+
 #6
+write.csv(O3_NC2018_select, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(O3_NC2019_select, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(PM25_NC2018_select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(PM25_NC2019_select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
+
+# I am able to use the write.csv function to save the processed files in the processed data folder. 
 
 ```
 
@@ -107,8 +131,15 @@ str(PM25_NC2019)
 
 ```{r}
 #7
+EPAair_O3_PM25_NC1819 <- rbind(O3_NC2018_select, O3_NC2019_select, PM25_NC2018_select, PM25_NC2019_select)
+
+# Using rbind() function allows me to combine the data files because all the row names are the same. 
 
 #8
+EPAair_O3_PM25_NC1819 <- EPAair_O3_PM25_NC1819 %>%
+  filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
+  
+  
 
 #9
 
