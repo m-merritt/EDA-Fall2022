@@ -138,8 +138,7 @@ EPAair_O3_PM25_NC1819 <- rbind(O3_NC2018_select, O3_NC2019_select, PM25_NC2018_s
 #8
 EPAair_O3_PM25_NC1819 <- EPAair_O3_PM25_NC1819 %>%
   filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
-  
-  
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY)
 
 #9
 
