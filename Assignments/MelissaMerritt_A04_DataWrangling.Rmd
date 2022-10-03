@@ -127,7 +127,7 @@ write.csv(PM25_NC2019_select, row.names = FALSE, file = "./Data/Processed/EPAair
 
 9. Spread your datasets such that AQI values for ozone and PM2.5 are in separate columns. Each location on a specific date should now occupy only one row.
 10. Call up the dimensions of your new tidy dataset.
-11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1718_Processed.csv"
+11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
 ```{r}
 #7
@@ -136,16 +136,30 @@ EPAair_O3_PM25_NC1819 <- rbind(O3_NC2018_select, O3_NC2019_select, PM25_NC2018_s
 # Using rbind() function allows me to combine the data files because all the row names are the same. 
 
 #8
-EPAair_O3_PM25_NC1819 <- EPAair_O3_PM25_NC1819 %>%
-  filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School")
+EPAair_O3_PM25_NC1819 <- 
+  EPAair_O3_PM25_NC1819 %>%
+  filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarise(Mean_AQI = mean(DAILY_AQI_VALUE), 
+            Mean_latitude = mean(SITE_LATITUDE), 
+            Mean_longitude = mean(SITE_LONGITUDE)) %>%
+  mutate(Month = month(Date), Year = year(Date))
 
-  
+#I used the filter() function to gather just the sites that existed in all four of the data frames. Then I was able to use the group_by() function to clarify that for each row that had the same values in those four columns, we would take the means of the Daily AQI Value, the site latitude, and the site longitude. Lastly, I used the lubridate package, function mutate(), to create 2 new columns, month and year. 
 
 #9
+EPAair_O3_PM25_NC1819_spread <- pivot_wider(EPAair_O3_PM25_NC1819, names_from = AQS_PARAMETER_DESC, values_from = Mean_AQI)
+
+# I used the pivot_wider() function to spread the data out. I got the names from the original AQS_PARAMETER_DESC column, and was able to create two new columns (ozone and PM2.5) with the values from the Mean_AQI. 
 
 #10
+dim(EPAair_O3_PM25_NC1819_spread)
+
+# Once again the dim() function gives me the columns and the rows in the data frame.
 
 #11
+
+write.csv(EPAair_O3_PM25_NC1819_spread, row.names = FALSE, file =  "./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 
 ```
 
@@ -158,7 +172,13 @@ EPAair_O3_PM25_NC1819 <- EPAair_O3_PM25_NC1819 %>%
 ```{r}
 #12a
 
-#12b
+EPAair_O3_PM25_NC1819_summary <-
+  EPAair_O3_PM25_NC1819_spread %>%
+  group_by(Site.Name, Month, Year) %>%
+  summarise(mean_AQI_ozone = mean(Ozone),
+            mean_AQI_PM2.5 = mean(PM2.5)) 
+  #12b
+  
 
 #13
 
