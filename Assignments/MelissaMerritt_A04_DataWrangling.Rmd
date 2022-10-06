@@ -5,14 +5,6 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-```{r setup, include=FALSE}
-#This code chunk will tidy your knit PDF files, wrapping long code lines
-#For it to work, the "formatR" package needs to be installed
-
-#install.packages('formatR')
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
-```
-
 ## OVERVIEW
 
 This exercise accompanies the lessons in Environmental Data Analytics on Data Wrangling 
@@ -30,8 +22,16 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 1. Check your working directory, load the `tidyverse` and `lubridate` packages, and upload all four raw data files associated with the EPA Air dataset, being sure to set string columns to be read in a factors. See the README file for the EPA air datasets for more information (especially if you have not worked with air quality data previously). 
 
 2. Explore the dimensions, column names, and structure of the datasets. 
+```{r setup, message=FALSE}
 
-```{r, message = FALSE}
+install.packages('formatR')
+install.packages('knitr')
+library(formatR)
+library(knitr)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80),tidy = TRUE)
+```
+
+```{r, message=FALSE}
 #1 
 getwd()
 
@@ -61,7 +61,7 @@ colnames(O3_NC2019)
 colnames(PM25_NC2018)
 colnames(PM25_NC2019)
 
-# the colnames () function allows me to see the names of each column in the data set. 
+# the colnames() function allows me to see the names of each column in the data set. 
 
 str(O3_NC2018)
 str(O3_NC2019)
@@ -106,10 +106,14 @@ PM25_NC2018_select$AQS_PARAMETER_DESC <- "PM2.5"
 PM25_NC2019_select$AQS_PARAMETER_DESC <- "PM2.5"
 
 #6
-write.csv(O3_NC2018_select, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
-write.csv(O3_NC2019_select, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
-write.csv(PM25_NC2018_select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
-write.csv(PM25_NC2019_select, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
+write.csv(O3_NC2018_select, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(O3_NC2019_select, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(PM25_NC2018_select, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(PM25_NC2019_select, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
 
 # I am able to use the write.csv function to save the processed files in the processed data folder. 
 
@@ -175,16 +179,21 @@ EPAair_O3_PM25_NC1819_summary <-
   EPAair_O3_PM25_NC1819_spread %>%
   group_by(Site.Name, Month, Year) %>%
   summarise(mean_AQI_ozone = mean(Ozone),
-            mean_AQI_PM2.5 = mean(PM2.5)) 
+            mean_AQI_PM2.5 = mean(PM2.5))
 #12b
-  
+EPAair_O3_PM25_NC1819_summary_NA <-
+  EPAair_O3_PM25_NC1819_summary %>%
+  drop_na(mean_AQI_ozone, mean_AQI_PM2.5)
+
+# To summarize the data into our final data frame I grouped the data with the group_by() function, and then combined the ozone and PM2.5 into mean values for the rows that shared the same Site.Name, Month, and Year. The drop_NA function allows me to get rid of the NA values in both the mean_AQI_ozone column and the mean_AQI_PM2.5 column. 
 
 #13
 
-dim(EPAair_O3_PM25_NC1819_summary)
+dim(EPAair_O3_PM25_NC1819_summary_NA)
+
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: We used the function 'drop_na' over 'na.omit' because the na.omit function cannot observe a subset of columns. It will always omit all of the NAs. With the drop_na function, we are able to specify that we only want to omit rows that have NAs in the mean ozone column and the mean PM2.5 column. In this case, we get the same results for both, but it other cases it could be useful. 
