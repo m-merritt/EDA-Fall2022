@@ -27,7 +27,7 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 install.packages('formatR')
 library(formatR)
 
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy = TRUE)
 ```
 
 ```{r, message=FALSE}
@@ -104,6 +104,8 @@ PM25_NC2019_select <- select(PM25_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_
 PM25_NC2018_select$AQS_PARAMETER_DESC <- "PM2.5"
 PM25_NC2019_select$AQS_PARAMETER_DESC <- "PM2.5"
 
+# Using the column name I was able to rename the information in the columns to "PM2.5"
+
 #6
 write.csv(O3_NC2018_select, row.names = FALSE, 
           file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
@@ -136,7 +138,7 @@ write.csv(PM25_NC2019_select, row.names = FALSE,
 #7
 EPAair_O3_PM25_NC1819 <- rbind(O3_NC2018_select, O3_NC2019_select, PM25_NC2018_select, PM25_NC2019_select)
 
-# Using rbind() function allows me to combine the data files because all the row names are the same. 
+# Using the rbind() function allows me to combine the data files because all the row names are the same. 
 
 #8
 EPAair_O3_PM25_NC1819 <- 
@@ -195,4 +197,4 @@ dim(EPAair_O3_PM25_NC1819_summary_NA)
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: We used the function 'drop_na' over 'na.omit' because the na.omit function cannot observe a subset of columns. It will always omit all of the NAs. With the drop_na function, we are able to specify that we only want to omit rows that have NAs in the mean ozone column and the mean PM2.5 column. In this case, we get the same results for both, but it other cases it could be useful. 
+> Answer: We used the function 'drop_na' over 'na.omit' because the na.omit function cannot observe a subset of columns. It will always omit all of the NAs. With the drop_na function, we are able to specify that we only want to omit rows that have NAs in the mean ozone column and the mean PM2.5 column. In this case, we get the same results for both, but in other cases it could be useful. 
