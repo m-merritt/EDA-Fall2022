@@ -40,8 +40,40 @@ the processed data file for the Niwot Ridge litter dataset (use the
 
 ```{r}
 #1 
+getwd()
+
+# I used getwd() to check the working directory. 
+
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("cowplot")
+
+library(tidyverse)
+library(lubridate)
+library(cowplot)
+
+# Using the install.packages() and library() to get the packages needed to run the specific functions.
+
+Chemistry_Nutrients_PeterPaul <- read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
+
+NiwotRidge_Litter <- read.csv("./Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
+
+# I used the read.csv() function to import the data files and I renamed them to something shorter and easier to work with. 
 
 #2 
+
+class(Chemistry_Nutrients_PeterPaul$sampledate)
+class(NiwotRidge_Litter$collectDate)
+
+# Initially when I check the class of the date columns in each of the data frames they were factors, so I used the as.Date() function below to change the class to date. 
+
+Chemistry_Nutrients_PeterPaul$sampledate <- as.Date(Chemistry_Nutrients_PeterPaul$sampledate, format = "%m/%d/%Y")
+NiwotRidge_Litter$collectDate <- as.Date(NiwotRidge_Litter$collectDate, format = "%m/%d/%Y")
+
+class(Chemistry_Nutrients_PeterPaul$sampledate)
+class(NiwotRidge_Litter$collectDate)
+
+# I was able to recheck the class with the class() function to ensure that the date columns were now being read as date formats. 
 
 ```
 ## Define your theme
@@ -49,6 +81,7 @@ the processed data file for the Niwot Ridge litter dataset (use the
 
 ```{r}
 #3
+theme_set(theme_light())
 
 ```
 
@@ -64,6 +97,9 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4
+
+
+
 
 ```
 
