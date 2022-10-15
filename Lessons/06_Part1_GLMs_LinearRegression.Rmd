@@ -43,7 +43,7 @@ getwd()
 library(tidyverse)
 options(scipen = 4)
 
-PeterPaul.chem.nutrients <- read.csv("./Data_2022sp/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
+PeterPaul.chem.nutrients <- read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
@@ -98,7 +98,7 @@ An exploratory option to visualize the model fit is to use the function `plot`. 
 4. **Residuals vs. Leverage.** This graph will display potential outliers. The values that fall outside the dashed red lines (Cook's distance) are outliers for the model. Watch for drastic departures of the solid red line from horizontal - this is a sign of a poor model fit.
 
 ```{r, fig.height = 3, fig.width = 4}
-par(mfrow = c(2,2), mar=c(4,4,4,4))
+#par(mfrow = c(2,2), mar=c(4,4,4,4))
 plot(irradiance.regression)
 par(mfrow = c(1,1))
 ```
@@ -122,9 +122,13 @@ PeterPaul.chem.nutrients <- filter(PeterPaul.chem.nutrients,
 irradiance.regression2 <- lm(data = PeterPaul.chem.nutrients, log(irradianceWater) ~ depth)
 summary(irradiance.regression2)
 
+# filter out zeros above, the summary shows the higher the depth the higher the irradiance. now with the log transformed data the r^2 increased a lot so this is a much better fit 
+
 par(mfrow = c(2,2), mar=c(4,4,4,4))
 plot(irradiance.regression2)
 par(mfrow = c(1,1))
+
+#these show better residuals 
 
 # Add a line and standard error for the linear regression
 irradiancebydepth2 <- 
@@ -154,11 +158,15 @@ TPregression <- lm(data = subset(PeterPaul.chem.nutrients, lakename == "Paul Lak
                    tp_ug ~ depth + dissolvedOxygen)
 summary(TPregression)
 
+# summary shows the estimates for the intercept and the relationships between the multiple variables (p value less than .05) 
+
 TPplot <- ggplot(subset(PeterPaul.chem.nutrients, lakename == "Paul Lake"), 
                  aes(x = dissolvedOxygen, y = tp_ug, color = depth)) +
   geom_point() +
   xlim(0, 20)
 print(TPplot)
+
+# above plot shows that the variables are based on depth 
 
 par(mfrow = c(2,2), mar=c(4,4,4,4))
 plot(TPregression)
@@ -170,7 +178,7 @@ par(mfrow = c(1,1))
 We can also make exploratory plots of several continuous data points to determine possible relationships, as well as covariance among explanatory variables. 
 
 ```{r, fig.height = 3, fig.width = 4}
-#install.packages("corrplot")
+install.packages("corrplot")
 library(corrplot)
 PeterPaulnutrients <- 
   PeterPaul.chem.nutrients %>%
@@ -179,6 +187,11 @@ PeterPaulnutrients <-
 PeterPaulCorr <- cor(PeterPaulnutrients)
 corrplot(PeterPaulCorr, method = "ellipse")
 corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+
+#only have the columns of interest in the matrix - select()
+# oval shapes represent the scatter plot of one variable against the other 
+#dark red (-1) a strong but negative correlation 
+# dark blue (+1) a strong but positive correlation
 ```
 
 ## AIC to select variables
@@ -200,4 +213,9 @@ step(TPAIC)
 TPmodel <- lm(data = Paul.naomit, tp_ug ~ dissolvedOxygen + temperature_C + tn_ug)
 summary(TPmodel)
 
+#step() function gives results showing the starting point for the AIC and the other variables and new AIC values for when you remove other variables 
+
+#best regression is considering oxygen, nitrogen and temperature
+
+#usually using step and choosing variables lead to a stronger r^2 value
 ```
