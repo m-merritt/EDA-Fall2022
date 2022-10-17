@@ -16,14 +16,16 @@ editor_options:
 
 ## Set up
 ```{r, message = FALSE}
+install.packages("agricolae")
+
 library(tidyverse)
 library(agricolae)   
 
-EPAair <- read.csv("./Data_2022sp/Processed/EPAair_O3_PM25_NC1819_Processed.csv", stringsAsFactors = TRUE)
+EPAair <- read.csv("./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv", stringsAsFactors = TRUE)
 # Set date to date format
 EPAair$Date <- as.Date(EPAair$Date, format = "%Y-%m-%d")
 
-Litter <- read.csv("./Data_2022sp/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
+Litter <- read.csv("./Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
 # Set date to date format
 Litter$collectDate <- as.Date(Litter$collectDate , format = "%Y-%m-%d")
 
@@ -46,8 +48,20 @@ Create three plots, each with appropriately formatted axes and legends. Choose a
 
 ```{r}
 #Exercise 1:
+Density_plot <- ggplot(EPAair, aes(X=Ozone, fill = as.factor(Year))) + 
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("darkgreen", "darkblue")) +
+  labs(x = "Ozone AQI value")
+    print(Density_plot)
 
+  boxplot <- 
+    ggplot(EPAair, aes(x = as.factor(Year), y = Ozone)) +
+  geom_boxplot()
 
+  
+  
+  
+# code for these are in my camera roll
 ```
 
 ## Linear Regression
@@ -56,14 +70,26 @@ Important components of the linear regression are the correlation and the R-squa
 
 For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 
-```{r}
+```{r, fig.height = 3, fig.width = 4}
 
 #Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
 
+EPA_regression <- lm(data = EPAair, PM2.5 ~ Ozone)
+summary(EPA_regression)
+
+# we assume PM2.5 is our response (so y)
+# a small r^2 value means that there are others things that are predictor for the variability in PM2.5 (not just ozone)
 
 
 #Exercise 3: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
 
+EPA_regression_plot <- 
+  ggplot(EPAair, aes(x=Ozone, y=PM2.5)) +
+    geom_point() +
+  geom_smooth(method = "lm", col = "blue")
+print(EPA_regression_plot)
+
+#next step is trying to add more variables to model 
 
 
 ```
