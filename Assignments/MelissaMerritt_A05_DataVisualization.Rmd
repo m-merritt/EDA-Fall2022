@@ -67,8 +67,8 @@ class(NiwotRidge_Litter$collectDate)
 
 # Initially when I check the class of the date columns in each of the data frames they were factors, so I used the as.Date() function below to change the class to date. 
 
-Chemistry_Nutrients_PeterPaul$sampledate <- as.Date(Chemistry_Nutrients_PeterPaul$sampledate, format = "%m/%d/%Y")
-NiwotRidge_Litter$collectDate <- as.Date(NiwotRidge_Litter$collectDate, format = "%m/%d/%Y")
+Chemistry_Nutrients_PeterPaul$sampledate <- as.Date(Chemistry_Nutrients_PeterPaul$sampledate, format = "%Y-%m-%d")
+NiwotRidge_Litter$collectDate <- as.Date(NiwotRidge_Litter$collectDate, format = "%Y-%m-%d")
 
 class(Chemistry_Nutrients_PeterPaul$sampledate)
 class(NiwotRidge_Litter$collectDate)
@@ -81,8 +81,11 @@ class(NiwotRidge_Litter$collectDate)
 
 ```{r}
 #3
-theme_set(theme_light())
+mytheme <- theme_bw(base_size = 12) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top") 
 
+# I built my theme using the black and white theme. Base_size represents the base font, so I set that at 12. The theme() function allows me to change the color scheme of the axis text, and keep the legend on top of the plots. 
 ```
 
 ## Create graphs
@@ -97,8 +100,20 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4
+Phosphorus_Phosphate <- 
+  ggplot(Chemistry_Nutrients_PeterPaul, aes(x = po4, y = tp_ug, color = lakename)) +
+  geom_point(size = 1) +
+  xlim(c = 0, 10) +
+  ylim(c = 0, 50) +
+  xlab("Total Phosphate") +
+  ylab("Total Phosphorus") + 
+  geom_smooth(method = lm, color = "black", se = F) +
+  labs(color = "Lake Name") +
+  mytheme 
+print(Phosphorus_Phosphate)
 
 
+# I am using the ggplot() function to assign po4 to x and tp_ug to y to create a plot of phosphorus (tp_ug) BY phosphate (po4). To make the colors by lake, I set color = lakename. I am doing a scatter plot because it is the best representation of the data, especially since we are adding a regression line. Since there was an obvious extreme value, I set the x limit to 50, so the x axis only goes to the value of 50. The xlab() and ylab() functions allow me to label the axes. geom_smooth() creates the regression line (with the method = lm). I use "se=F" to get rid of the gray confidence interval. Lastly, I add my theme to the plot, and print it, so I can look at the outcome.  
 
 
 ```
@@ -114,6 +129,35 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 
 ```{r}
 #5
+
+Temperature_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = temperature_C, color = lakename)) +
+  geom_boxplot() + 
+  xlab("Month") + 
+  ylab("Temperature in Celsius") + 
+  labs(color = "Lake Name") +
+  mytheme
+print(Temperature_Month)
+
+TP_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tp_ug, color = lakename)) +
+  geom_boxplot() + 
+  xlab("Month") + 
+  ylab("Total Phosphorus") + 
+  labs(color = "Lake Name") +
+  mytheme
+print(TP_Month)
+
+TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tn_ug, color = lakename)) +
+  geom_boxplot() + 
+  xlab("Month") + 
+  ylab("Total Nitrogen") + 
+  labs(color = "Lake Name") +
+  mytheme
+print(TN_Month)
+
+Chem_Nutrient_Plot_Grid <- plot_grid(Temperature_Month, TP_Month, TN_Month, labels = c("Temperature", "Phosphorus", "Nitrogen"))
+print(Chem_Nutrient_Plot_Grid)
+
+
 
 ```
 
