@@ -154,7 +154,19 @@ TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tn_ug, colo
   mytheme
 print(TN_Month)
 
-Chem_Nutrient_Plot_Grid <- plot_grid(Temperature_Month, TP_Month, TN_Month, labels = c("Temperature", "Phosphorus", "Nitrogen"))
+legend_grid <- get_legend(
+  Temperature_Month + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom")
+)
+
+
+Chem_Nutrient_Plot_Grid <- plot_grid(
+  Temperature_Month + theme(legend.position = "none"),
+  TP_Month + theme(legend.position = "none"),
+  TN_Month + theme(legend.position = "none"),
+  labels = c("Temperature", "Phosphorus", "Nitrogen"), 
+  legend_grid)
 print(Chem_Nutrient_Plot_Grid)
 
 
