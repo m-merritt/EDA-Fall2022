@@ -69,6 +69,7 @@ class(NiwotRidge_Litter$collectDate)
 
 Chemistry_Nutrients_PeterPaul$sampledate <- as.Date(Chemistry_Nutrients_PeterPaul$sampledate, format = "%Y-%m-%d")
 NiwotRidge_Litter$collectDate <- as.Date(NiwotRidge_Litter$collectDate, format = "%Y-%m-%d")
+Chemistry_Nutrients_PeterPaul$month <- as.Date(Chemistry_Nutrients_PeterPaul$month, format = "%m")
 
 class(Chemistry_Nutrients_PeterPaul$sampledate)
 class(NiwotRidge_Litter$collectDate)
@@ -138,6 +139,8 @@ Temperature_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = te
   mytheme
 print(Temperature_Month)
 
+#description...
+
 TP_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tp_ug, color = lakename)) +
   geom_boxplot() + 
   xlab("Month") + 
@@ -145,6 +148,9 @@ TP_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tp_ug, colo
   labs(color = "Lake Name") +
   mytheme
 print(TP_Month)
+
+
+#description...
 
 TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tn_ug, color = lakename)) +
   geom_boxplot() + 
@@ -154,22 +160,27 @@ TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tn_ug, colo
   mytheme
 print(TN_Month)
 
+#description...
+
 legend_grid <- get_legend(
   Temperature_Month + 
     guides(color = guide_legend(nrow = 1)) +
     theme(legend.position = "bottom")
 )
 
+#description...
+
 
 Chem_Nutrient_Plot_Grid <- plot_grid(
   Temperature_Month + theme(legend.position = "none"),
   TP_Month + theme(legend.position = "none"),
   TN_Month + theme(legend.position = "none"),
-  labels = c("Temperature", "Phosphorus", "Nitrogen"), 
+  labels = c("Temperature", "Phosphorus", "Nitrogen"), +
   legend_grid)
 print(Chem_Nutrient_Plot_Grid)
 
 
+#description...
 
 ```
 
@@ -187,12 +198,30 @@ of each land use)
 three facets rather than separated by color. 
 
 ```{r}
-#6
+#6 
+drymass_date <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass, color = nlcdClass)) +
+  geom_point() +
+  xlab("Date Collected") + 
+  ylab("Dry Mass of Needles") +
+  labs(color = "NLCD Class") +
+  mytheme
+print(drymass_date)
+
+# To create this plot first, I used the ggplot() function to define the data I was plotting. I use the subset() function to ensure that I am only plotting points that are in the functional group of needles. After I get the subset, I am able to define the x and y axis as the date and the dry mass respectively. Using the color = nlcdClass allows me to assign a color to the points representing each of the nlcd classes. The geom_point() allows me to graph the scatter plot. The xlab() and ylab() allow me to name the axes respectively. The labs() function is similar, but this allows me to name the legend. 
 
 #7
+drymass_date_facet <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass)) +
+  geom_point() +
+  facet_wrap(vars(nlcdClass)) +
+    ylab("Dry Mass of Needles") + 
+    xlab("Date Collected") +
+  mytheme
+print(drymass_date_facet)
+
+# To create this plot I used the same subset as above. The only difference to this plot is the facet_wrap() function which allows me to separate the plots by the different nlcd classes. 
 
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer: 
