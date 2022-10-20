@@ -69,7 +69,6 @@ class(NiwotRidge_Litter$collectDate)
 
 Chemistry_Nutrients_PeterPaul$sampledate <- as.Date(Chemistry_Nutrients_PeterPaul$sampledate, format = "%Y-%m-%d")
 NiwotRidge_Litter$collectDate <- as.Date(NiwotRidge_Litter$collectDate, format = "%Y-%m-%d")
-Chemistry_Nutrients_PeterPaul$month <- as.Date(Chemistry_Nutrients_PeterPaul$month, format = "%m")
 
 class(Chemistry_Nutrients_PeterPaul$sampledate)
 class(NiwotRidge_Litter$collectDate)
@@ -104,17 +103,17 @@ limits using `xlim()` and/or `ylim()`).
 Phosphorus_Phosphate <- 
   ggplot(Chemistry_Nutrients_PeterPaul, aes(x = po4, y = tp_ug, color = lakename)) +
   geom_point(size = 1) +
-  xlim(c = 0, 10) +
-  ylim(c = 0, 50) +
-  xlab("Total Phosphate") +
-  ylab("Total Phosphorus") + 
+  xlim(c = 0, 20) +
+  ylim(c = 0, 100) +
+  xlab("Total Phosphate (µg)") +
+  ylab("Total Phosphorus (µg)") + 
   geom_smooth(method = lm, color = "black", se = F) +
   labs(color = "Lake Name") +
   mytheme 
 print(Phosphorus_Phosphate)
 
 
-# I am using the ggplot() function to assign po4 to x and tp_ug to y to create a plot of phosphorus (tp_ug) BY phosphate (po4). To make the colors by lake, I set color = lakename. I am doing a scatter plot because it is the best representation of the data, especially since we are adding a regression line. Since there was an obvious extreme value, I set the x limit to 50, so the x axis only goes to the value of 50. The xlab() and ylab() functions allow me to label the axes. geom_smooth() creates the regression line (with the method = lm). I use "se=F" to get rid of the gray confidence interval. Lastly, I add my theme to the plot, and print it, so I can look at the outcome.  
+# I am using the ggplot() function to assign po4 to x and tp_ug to y to create a plot of phosphorus (tp_ug) BY phosphate (po4). To make the colors by lake, I set color = lakename. I am doing a scatter plot because it is the best representation of the data, especially since we are adding a regression line. Since there was an obvious extreme value, I set the x limit to 20, so the x axis only goes to the value of 20. I chose to go to 20 because I think it better represents the entireity of the data, and provides a regression line that better represents the trend. I chose for the y axis to go to 100 to get rid of extreme values. The xlab() and ylab() functions allow me to label the axes. geom_smooth() creates the regression line (with the method = lm). I use "se=F" to get rid of the gray confidence interval. Lastly, I add my theme to the plot, and print it, so I can look at the outcome.  
 
 
 ```
@@ -131,20 +130,22 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 ```{r}
 #5
 
-Temperature_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = temperature_C, color = lakename)) +
+Temperature_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x =  factor(month, levels = c(1:12)), y = temperature_C, color = lakename)) +
   geom_boxplot() + 
+  scale_x_discrete(labels = month.abb, drop= FALSE) +
   xlab("Month") + 
-  ylab("Temperature in Celsius") + 
+  ylab("Temperature °C") + 
   labs(color = "Lake Name") +
   mytheme
 print(Temperature_Month)
 
 #description...
 
-TP_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tp_ug, color = lakename)) +
+TP_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = factor(month, levels = c(1:12)), y = tp_ug, color = lakename)) +
   geom_boxplot() + 
+  scale_x_discrete(labels = month.abb, drop= FALSE) +
   xlab("Month") + 
-  ylab("Total Phosphorus") + 
+  ylab("Total Phosphorus (µg)") + 
   labs(color = "Lake Name") +
   mytheme
 print(TP_Month)
@@ -152,21 +153,15 @@ print(TP_Month)
 
 #description...
 
-TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = month, y = tn_ug, color = lakename)) +
+TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = factor(month, levels = c(1:12)), y = tn_ug, color = lakename)) +
   geom_boxplot() + 
+  scale_x_discrete(labels = month.abb, drop= FALSE) +
   xlab("Month") + 
-  ylab("Total Nitrogen") + 
+  ylab("Total Nitrogen (µg)") + 
   labs(color = "Lake Name") +
   mytheme
 print(TN_Month)
 
-#description...
-
-legend_grid <- get_legend(
-  Temperature_Month + 
-    guides(color = guide_legend(nrow = 1)) +
-    theme(legend.position = "bottom")
-)
 
 #description...
 
@@ -174,9 +169,9 @@ legend_grid <- get_legend(
 Chem_Nutrient_Plot_Grid <- plot_grid(
   Temperature_Month + theme(legend.position = "none"),
   TP_Month + theme(legend.position = "none"),
-  TN_Month + theme(legend.position = "none"),
-  labels = c("Temperature", "Phosphorus", "Nitrogen"), +
-  legend_grid)
+  TN_Month + theme(legend.position = "bottom"),
+ labels = c("Temperature", "Phosphorus", "Nitrogen"),
+  nrow = 3, ncol = 1, align = "v", rel_heights = c(2,2,2.5))
 print(Chem_Nutrient_Plot_Grid)
 
 
@@ -202,7 +197,7 @@ three facets rather than separated by color.
 drymass_date <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass, color = nlcdClass)) +
   geom_point() +
   xlab("Date Collected") + 
-  ylab("Dry Mass of Needles") +
+  ylab("Dry Mass of Needles (g)") +
   labs(color = "NLCD Class") +
   mytheme
 print(drymass_date)
@@ -213,7 +208,7 @@ print(drymass_date)
 drymass_date_facet <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass)) +
   geom_point() +
   facet_wrap(vars(nlcdClass)) +
-    ylab("Dry Mass of Needles") + 
+    ylab("Dry Mass of Needles (g)") + 
     xlab("Date Collected") +
   mytheme
 print(drymass_date_facet)
@@ -224,4 +219,4 @@ print(drymass_date_facet)
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer: 
+> Answer: I think plot 7 is more effective because you can more effectively see the different 
