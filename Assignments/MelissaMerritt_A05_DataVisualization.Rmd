@@ -10,7 +10,7 @@ geometry: margin=2.54cm
 #For it to work, the "formatR" package needs to be installed
 
 install.packages('formatR')
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy = TRUE)
 ```
 
 ## OVERVIEW
@@ -98,7 +98,7 @@ separate aesthetics for Peter and Paul lakes. Add a line of best fit and
 color it black. Adjust your axes to hide extreme values (hint: change the 
 limits using `xlim()` and/or `ylim()`).
 
-```{r}
+```{r, fig.height = 4, fig.width = 6, warning = FALSE}
 #4
 Phosphorus_Phosphate <- 
   ggplot(Chemistry_Nutrients_PeterPaul, aes(x = po4, y = tp_ug, color = lakename)) +
@@ -113,7 +113,7 @@ Phosphorus_Phosphate <-
 print(Phosphorus_Phosphate)
 
 
-# I am using the ggplot() function to assign po4 to x and tp_ug to y to create a plot of phosphorus (tp_ug) BY phosphate (po4). To make the colors by lake, I set color = lakename. I am doing a scatter plot because it is the best representation of the data, especially since we are adding a regression line. Since there was an obvious extreme value, I set the x limit to 20, so the x axis only goes to the value of 20. I chose to go to 20 because I think it better represents the entireity of the data, and provides a regression line that better represents the trend. I chose for the y axis to go to 100 to get rid of extreme values. The xlab() and ylab() functions allow me to label the axes. geom_smooth() creates the regression line (with the method = lm). I use "se=F" to get rid of the gray confidence interval. Lastly, I add my theme to the plot, and print it, so I can look at the outcome.  
+# I am using the ggplot() function to assign po4 to x and tp_ug to y to create a plot of phosphorus (tp_ug) BY phosphate (po4). To make the colors by lake, I set color = lakename. I am doing a scatter plot because it is the best representation of the data, especially since we are adding a regression line. Since there was an obvious extreme value, I set the x limit to 20. I chose to go to 20 because I think it better represents the entirety of the data and provides a regression line that better represents the trend. I chose for the y axis to go to 100 to get rid of extreme values. The xlab() and ylab() functions allow me to label the axes. geom_smooth() creates the regression line (with the method = lm). I use "se=F" to get rid of the gray confidence interval. Lastly, I add my theme to the plot, and print it, so I can look at the outcome.  
 
 
 ```
@@ -127,7 +127,7 @@ present and that graph axes are aligned.
 Tip: R has a build in variable called `month.abb` that returns a list of months;
 see <https://r-lang.com/month-abb-in-r-with-example>
 
-```{r}
+```{r, fig.height = 4, fig.width = 6, warning = FALSE}
 #5
 
 Temperature_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x =  factor(month, levels = c(1:12)), y = temperature_C, color = lakename)) +
@@ -161,25 +161,27 @@ TN_Month <- ggplot(Chemistry_Nutrients_PeterPaul, aes(x = factor(month, levels =
 print(TN_Month)
 
 
-# For all three of the plots above I am using the ggplot() function to plot boxplots for each of the different variables. For each plot the x = factor(month) allows me to change the month values in factors going from 1 to 12. Each plot has a different y variable, and the color is based on the lake name. The scale_x_discrete() function allows me to change the labels on the x-axis from numbers to the actual month names (abbreviated), and drop = False prevents the plot from dropping the names with no values attach (i.e. keeping all the month names). I then use the xlab(), ylab(), and labs() functions to lable the x-axis, y-axis, and legend respectively. For the total nitrogen graph, I added a y limit because there were a few extreme values beyond 3000 that made the data difficult to see. 
+# For all three of the plots above I am using the ggplot() function to plot boxplots for each of the different variables. For each plot the x = factor(month) allows me to change the month values to factors going from 1 to 12. Each plot has a different y variable, and the color is based on the lake name. The scale_x_discrete() function allows me to change the labels on the x-axis from numbers to the actual month names (abbreviated), and drop = False prevents the plot from dropping the names with no values attach (i.e. keeping all the month names). I then use the xlab(), ylab(), and labs() functions to label the x-axis, y-axis, and legend respectively. For the total nitrogen graph, I added a y limit because there were a few extreme values beyond 3000 that made the data difficult to see. I changed the figure height and width to better represent the plots when knitting.
 
+```
+
+
+```{r, fig.height = 10, fig.width = 10, warning=FALSE}
 
 Chem_Nutrient_Plot_Grid <- plot_grid(
   Temperature_Month + theme(legend.position = "none"),
   TP_Month + theme(legend.position = "none"),
   TN_Month + theme(legend.position = "bottom"),
-  nrow = 3, ncol = 1, align = "v", rel_heights = c(2,2,2.5))
+  nrow = 3, ncol = 1, align = "v", rel_heights = c(7,7,10)) 
 print(Chem_Nutrient_Plot_Grid)
 
-
-# For this plot I used the plot_grid() function to put all three of the plots above into one. I used the theme() function to make sure only one of the plots had a legend (since the legends are the same). The nrow and ncol allowed me to ensure that the plots were all stacked on top of eachother. The align = "v" allowed me to make sure all the plots were vertically aligned, and the rel_heights allowed me to manually input how tall each plot was based on the information it was portraying. 
-
+# For this plot I used the plot_grid() function to put all three of the plots above into one. I used the theme() function to make sure only one of the plots had a legend (since the legends are the same). The nrow and ncol allowed me to ensure that the plots were all stacked on top of each other. The align = "v" allowed me to make sure all the plots were vertically aligned, and the rel_heights allowed me to manually input how tall each plot was based on the information it was portraying. I decided to put this plot in a new r chunk, so I could change the figure height and width, so it would print more clearly in the knitted PDF.
 ```
 
 Question: What do you observe about the variables of interest over seasons 
 and between lakes? 
 
-> Answer: Overall, it appears that Peter Lake generally has higher levels for each of the variables. For both lakes temperature peaks in July and August, which makes sense for the region. For total phosphorous in Peter Lake....
+> Answer: Overall, it appears that Peter Lake generally has higher levels for each variable. For both lakes, temperature peaks in July and August, which makes sense for the region. Total phosphorous in Peter Lake gradually increases with the temperature. Total phosphorous in Paul Lake seems not to follow the same pattern, but it is hard to say when only looking at the box plot (the interquartile range with the extreme values does not always represent the data accurately). When looking at the Nitrogen values, they follow a very similar trend as the phosphorous for both of the lakes. For Peter Lake, it is clear that both Nitrogen and Phosphorous increase with temperature. For Paul Lake, it is less clear, but it seems as though the values for Phosphorous and Nitrogen decrease with an increase in temperature. I think it would be essential to look at other plots (i.e., a violin plot) to get a better picture of the trends in Paul Lake. 
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the 
 "Needles" functional group. Plot the dry mass of needle litter by date and 
@@ -189,7 +191,7 @@ of each land use)
 7. [Niwot Ridge] Now, plot the same plot but with NLCD classes separated into 
 three facets rather than separated by color. 
 
-```{r}
+```{r, fig.height = 6, fig.width = 8, warning = FALSE}
 #6 
 drymass_date <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass, color = nlcdClass)) +
   geom_point() +
@@ -199,7 +201,7 @@ drymass_date <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), 
   mytheme
 print(drymass_date)
 
-# To create this plot first, I used the ggplot() function to define the data I was plotting. I use the subset() function to ensure that I am only plotting points that are in the functional group of needles. After I get the subset, I am able to define the x and y axis as the date and the dry mass respectively. Using the color = nlcdClass allows me to assign a color to the points representing each of the nlcd classes. The geom_point() allows me to graph the scatter plot. The xlab() and ylab() allow me to name the axes respectively. The labs() function is similar, but this allows me to name the legend. 
+# To create this plot first, I used the ggplot() function to define the data I was plotting. I used the subset() function to ensure that I am only plotting points that are in the functional group of needles. After I get the subset, I am able to define the x and y axis as the date and the dry mass respectively. Using the color = nlcdClass allows me to assign a color to the points representing each of the nlcd classes. The geom_point() allows me to graph the scatter plot. The xlab() and ylab() allow me to name the axes respectively. The labs() function is similar, but this allows me to name the legend. Lastly, I add my theme to the plot and use the print() function to view it. For both of these plots, I change the figure height and width to show the entire plot when knitting.
 
 #7
 drymass_date_facet <- ggplot(subset(NiwotRidge_Litter, functionalGroup == "Needles"), aes(x = collectDate, y = dryMass)) +
@@ -216,4 +218,4 @@ print(drymass_date_facet)
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer: I think plot 7 is more effective because you can more effectively see each of the different NLCD Class, and the data points of needle dry mass that fall within each of them. 
+> Answer: I think plot 7 is more sufficient for viewing the data because you can more effectively see each of the different NLCD classes and the data points of needle dry mass that fall within each class. The first plot (plot 6) makes it harder to see the differences between the NLCD classes, even though they are colored differently. You are not able to see trends. In plot 7, the similarities and differences between the data are more prominent.  
