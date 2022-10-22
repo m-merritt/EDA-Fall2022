@@ -1,6 +1,6 @@
 ---
 title: "Assignment 6: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Student Name"
+author: "Melissa Merritt"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -34,11 +34,37 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup}
 #1
+getwd() 
 
+# I use getwd() to check the working directory. 
+
+library(tidyverse)
+library(agricolae)
+library(lubridate)
+library(cowplot)
+
+# I added the different packages that I thought might be necessary.
+
+NTL_LTER <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", stringsAsFactors = TRUE)
+
+# I use the read.csv() function to import the data file we are working with. 
+
+class(NTL_LTER$sampledate)
+
+# I initially check the class to confirm that the date is set as a factor.
+
+NTL_LTER$sampledate <- as.Date(NTL_LTER$sampledate, format = "%m/%d/%y")
+
+# I use the as.Date() function to change the date column to the date class, and I use the class() function to recheck the class. 
+
+class(NTL_LTER$sampledate)
 
 #2
+mytheme <- theme_bw(base_size = 12) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top") 
 
-
+# I built my theme using the black and white theme. Base_size represents the base font, so I set that at 12. The theme() function allows me to change the color scheme of the axis text, and keep the legend on top of the plots. 
 ```
 
 ## Simple regression
@@ -46,8 +72,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: Mean lake temperature recorded during July does not change with depth across all lakes.
+Ha: Mean lake temperature recorded during July does change with depth across all lakes. 
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -60,8 +86,25 @@ Ha:
 ```{r scatterplot}
 #4
 
+NTL_LTER_July <- NTL_LTER %>%
+  filter(daynum %in% c(183:213)) %>%
+  select(lakename:daynum, depth:temperature_C) %>%
+  drop_na()
+
+# In order to get only the records we need, we use the pipe function (%>%). Filter() allows me to select on the day numbers that are within July. Select() allows me to only keep the columns that are relevant. Drop_na() allows me to get rid of the noncomplete cases. 
+
 
 #5
+Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
+  geom_point(size = .75) +
+  ylim(0,35) +
+  geom_smooth(method = lm, color = "blue", se = F) + 
+  xlab("Depth") + 
+  ylab("Temperature °C") + 
+  mytheme
+  print(Temperature_depth)
+  
+# In order to plot temperature by depth, I use the ggplot() function and assign the x and y values within the aes() function. I use the geom_point() function to create the scatter plot, and I change the point size to .75 so we can better see the points since they are so close together. To limit the temperature to just between 0 and 35, I use the ylim() function. geom_smooth allows me to create the regression line, and I set it as blue so it better contrasts the points (se = F gets rid of the confidence interval). I use xlab and ylab to label the axes respectively. Lastly, I add my theme. I use the print function to view my plot. 
 
 
 ```
@@ -69,7 +112,7 @@ Ha:
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: 
+> Answer: The figure suggests that as depth increases, temperature decreases. The linerarity of the points suggests that there were monitors at specific depths, and the shallower depths have the most variability in temperature as compared to deeper temperature recordings. 
 
 
 7. Perform a linear regression to test the relationship and display the results
