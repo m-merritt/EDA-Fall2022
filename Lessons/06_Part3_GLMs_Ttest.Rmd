@@ -71,6 +71,8 @@ length(EPAair$Ozone) #8976 observations
 O3.onesample <- t.test(EPAair$Ozone, mu = 50, alternative = "less")
 O3.onesample
 
+# mu = 50 is the hypothesis, alternative is less (because that is how it is stated in the hypothesis) p value is less than 0.05, so we reject null hypothesis (go with alternative hypothesis)
+
 Ozone.plot <- ggplot(EPAair, aes(x = Ozone)) +
   geom_density(fill = "gray") +
   geom_vline(xintercept = 50, color = "#238b45", lty = 2, size = 0.9) +
@@ -78,9 +80,13 @@ Ozone.plot <- ggplot(EPAair, aes(x = Ozone)) +
   scale_y_continuous(expand = c(0, 0))
 print(Ozone.plot)
 
+#asking for a density plot in gray, and vertical line at 50 because that is the mean in question, the mean will 
+
 # Format as a GLM
 O3.onesample2 <- lm(Ozone ~ 1, EPAair)
 O3.onesample2
+
+# use lm function to find the mean of the series. we only get one coefficient which is the intercept term
 ```
 
 Write a sentence or two about the results of this test. Include both the results of the test and an interpretation that puts the findings in context of the research question.
@@ -99,15 +105,22 @@ Are Ozone levels different between 2018 and 2019?
 ggplot(EPAair, aes(x = Ozone, color = as.factor(Year))) +
   geom_freqpoly()
 
+
 #Format as a t-test
 #EPAair$Ozone will be our continuous dependent variable
 #EPAair$Year will be our categorical variable with two levels (2018 and 2019)
 O3.twosample <- t.test(EPAair$Ozone ~ EPAair$Year)
 O3.twosample
 
+#this will give you both mean and the p-value. difference in means is not equal to zero
+#to write as a GLM you need to change the question, we need to ask ourselves if year is a funtion of ozone 
+
 # Format as a GLM
 O3.twosample2 <- lm(EPAair$Ozone ~ EPAair$Year)
 summary(O3.twosample2)
+
+#coefficient are statistical different from zero (a predictor) if p value is less than 0.05
+
 
 ```
 
