@@ -91,6 +91,7 @@ print(EPA_regression_plot)
 
 #next step is trying to add more variables to model 
 
+#check phone for pictures with more info
 
 ```
 
@@ -103,16 +104,53 @@ What other variables can we add to improve model?
 
 #Exercise 4: Build correlation plots and identify more possible explanatory variables to add to the regression.
 
+install.packages("corrplot")
+library(corrplot)
+library(dplyr)
 
+EPAair_predict <- 
+  EPAair %>%
+  select(Mean_latitude:Ozone) %>% 
+  drop_na()
 
+EPAairCorr <- cor(EPAair_predict)
+corrplot(EPAairCorr, method = "ellipse")
+
+#gives us a visual representation of the correlation - the better the correlation the straighter the shape of the ellipses 
+#color - reds and oranges (negative correlation) + blues (postice correlation)
+
+corrplot.mixed(EPAairCorr, upper = "ellipse")
+
+#gives us a better indication of what we need to add to the linear regression 
+
+#from this correlation plot, you can see that you should run the regression with the mean_latitude, month, and ozone(which we already know) 
 
 #Exercise 5: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 5?
 
+EPAAIC <- lm(data = EPAair_predict, PM2.5 ~ Ozone + Year + Month + Mean_latitude + Mean_longitude)
 
+step(EPAAIC)
+# step tells us that if we remove year we will improve in terms of AIC (AIC without year is one unit less than none)
+
+# it is important to consider more than one metric when choosing the model you are going to go with 
+
+summary(EPAAIC)
+
+#need to run summary
+# with p-values we can make assumptions for variables 
+# shows similar results to what we got with the corrplot() 
+
+#results from step() show that ozone and month are correlated 
 
 
 #Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 5. 
 
+AICmodelEPA <- lm(data = EPAair_predict, PM2.5 ~ Ozone + Mean_latitude + Month + Mean_longitude)
+summary(AICmodelEPA)
+
+#take out year because it wasn't a good variable for our regression, so with the new variables we get a higher r-squared 
+
+# the p-values in this regression show that there is a relationship between month and ozone with pm2.5 
 ```
 
 
@@ -151,4 +189,19 @@ print(Litter.Totals.plot)
 
 ```{r}
 #Exercise 7: Improve the plot```
+
+
+#a. order by groups - create the column groups in your dataset - order by alphabetical 
+
+
+
+assign.group <- function(site)
+  return(Litter.Totals.groups$groups[as.character(site),2])
+
+
+
+
+# picture of code is in camera roll 
+  
+
 

@@ -120,6 +120,10 @@ Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
 ```{r linear.regression}
 #7
 
+NTL_LTER_lm <- lm(NTL_LTER_July$temperature_C ~ NTL_LTER_July$depth)
+summary(NTL_LTER_lm)
+
+# 
 
 ```
 
@@ -142,6 +146,7 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 ```{r temperature.model}
 #9
 
+#start with corplot!!
 
 
 #10
