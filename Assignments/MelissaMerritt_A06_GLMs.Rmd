@@ -42,6 +42,9 @@ library(tidyverse)
 library(agricolae)
 library(lubridate)
 library(cowplot)
+install.packages("corrplot")
+library(corrplot)
+library(dplyr)
 
 # I added the different packages that I thought might be necessary.
 
@@ -123,7 +126,7 @@ Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
 NTL_LTER_lm <- lm(NTL_LTER_July$temperature_C ~ NTL_LTER_July$depth)
 summary(NTL_LTER_lm)
 
-# 
+# We can use the lm() function to perform a linear regression to test the relationship between temperature and depth. We can then use the summary() function to show the results.
 
 ```
 
@@ -146,10 +149,37 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 ```{r temperature.model}
 #9
 
-#start with corplot!!
+NTL_LTER_July_predict <- 
+  NTL_LTER_July %>%
+  select(year4:temperature_C)
+
+# we create a new data set that takes out the lake name, so we are able to run a correlation (which needs to be factors) 
+
+NTL_LTER_July_predict_corr <- cor(NTL_LTER_July_predict)
+corrplot(NTL_LTER_July_predict_corr, method = "ellipse")
+
+# we can use the cor() to run the correlation, and then we can use the corrplot to plot the correlation. The ellipses show us which variables have the strongest correlations. 
+
+corrplot.mixed(NTL_LTER_July_predict_corr, upper = "ellipse")
+
+# the corrplot.mixed() function allows us to see both the ellipses and the NUMBER?? (what is this number?) Both of these plots will give us a better indication of which variables should be included in the regression. 
+
+NTL_LTER_AIC <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + year4 + daynum)
+summary(NTL_LTER_AIC)
+
+# To run the AIC we run another linear regression, with all the variables.  
+
+step(NTL_LTER_AIC)
+
+# The step() function allows us to see which variables.... 
+
+# The year variable does not have a strong correlation, so we can remove this variable from the next regression. (it is still recommended)
 
 
 #10
+
+temp.multiple.regression <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + daynum)
+summary(temp.multiple.regression)
 
 
 ```
