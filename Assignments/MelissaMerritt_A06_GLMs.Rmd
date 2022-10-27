@@ -66,8 +66,9 @@ class(NTL_LTER$sampledate)
 mytheme <- theme_bw(base_size = 12) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top") 
+theme_set(mytheme)
 
-# I built my theme using the black and white theme. Base_size represents the base font, so I set that at 12. The theme() function allows me to change the color scheme of the axis text, and keep the legend on top of the plots. 
+# I built my theme using the black and white theme. Base_size represents the base font, so I set that at 12. The theme() function allows me to change the color scheme of the axis text, and keep the legend on top of the plots. I use the function theme_set() to set my theme for the entire document. 
 ```
 
 ## Simple regression
@@ -75,7 +76,7 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: Mean lake temperature recorded during July does not change with depth across all lakes.
+H0: Mean lake temperature recorded during July does not change with depth across all lakes. 
 Ha: Mean lake temperature recorded during July does change with depth across all lakes. 
 
 
@@ -90,11 +91,12 @@ Ha: Mean lake temperature recorded during July does change with depth across all
 #4
 
 NTL_LTER_July <- NTL_LTER %>%
-  filter(daynum %in% c(183:213)) %>%
+  mutate(month = month(sampledate)) %>%
+  filter(month == "7") %>%
   select(lakename:daynum, depth:temperature_C) %>%
   drop_na()
 
-# In order to get only the records we need, we use the pipe function (%>%). Filter() allows me to select on the day numbers that are within July. Select() allows me to only keep the columns that are relevant. Drop_na() allows me to get rid of the noncomplete cases. 
+# In order to get only the records we need, we use the pipe function (%>%). The mutate function allows me to extract the month from the sampledate column, and then I am able to filter for July (month = 7). Select() allows me to only keep the columns that are relevant. Drop_na() allows me to get rid of the noncomplete cases. 
 
 
 #5
@@ -102,12 +104,11 @@ Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
   geom_point(size = .75) +
   ylim(0,35) +
   geom_smooth(method = lm, color = "blue", se = F) + 
-  xlab("Depth") + 
-  ylab("Temperature °C") + 
-  mytheme
+  xlab("Depth (meters)") + 
+  ylab("Temperature °C") 
   print(Temperature_depth)
   
-# In order to plot temperature by depth, I use the ggplot() function and assign the x and y values within the aes() function. I use the geom_point() function to create the scatter plot, and I change the point size to .75 so we can better see the points since they are so close together. To limit the temperature to just between 0 and 35, I use the ylim() function. geom_smooth allows me to create the regression line, and I set it as blue so it better contrasts the points (se = F gets rid of the confidence interval). I use xlab and ylab to label the axes respectively. Lastly, I add my theme. I use the print function to view my plot. 
+# In order to plot temperature by depth, I use the ggplot() function and assign the x and y values within the aes() function. I use the geom_point() function to create the scatter plot, and I change the point size to .75 so we can better see the points since they are so close together. To limit the temperature to just between 0 and 35, I use the ylim() function. geom_smooth allows me to create the regression line, and I set it as blue so it better contrasts the points (se = F gets rid of the confidence interval). I use xlab and ylab to label the axes respectively. Lastly, I don't need to add my theme because I set it in the early codes with theme_set(). I use the print function to view my plot. 
 
 
 ```
@@ -115,7 +116,7 @@ Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: The figure suggests that as depth increases, temperature decreases. The linerarity of the points suggests that there were monitors at specific depths, and the shallower depths have the most variability in temperature as compared to deeper temperature recordings. 
+> Answer: The figure suggests that as depth increases, temperature decreases, and this is shown in the negative linear trend. The shallower depths have the most variability in temperature as compared to deeper temperature recordings, and there appear to be less recordings at the deeper depths, so this could account for the lack of variability. The variation in temperatures suggests that there might not be a strong linear relationship. 
 
 
 7. Perform a linear regression to test the relationship and display the results
@@ -133,8 +134,7 @@ summary(NTL_LTER_lm)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:
-
+> Answer: 73.87% of the variability in temperature is explained by changes in depth. The degrees of freedom is 9726, which is the number of observations minus the number of variables. (explain how its based). There is a statistically significant relationship between temperature and depth because the p-value is smaller than 0.05. Temperature is predicted to change by -1.94621 for every 1m in depth. 
 
 ---
 
@@ -160,10 +160,6 @@ corrplot(NTL_LTER_July_predict_corr, method = "ellipse")
 
 # we can use the cor() to run the correlation, and then we can use the corrplot to plot the correlation. The ellipses show us which variables have the strongest correlations. 
 
-corrplot.mixed(NTL_LTER_July_predict_corr, upper = "ellipse")
-
-# the corrplot.mixed() function allows us to see both the ellipses and the NUMBER?? (what is this number?) Both of these plots will give us a better indication of which variables should be included in the regression. 
-
 NTL_LTER_AIC <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + year4 + daynum)
 summary(NTL_LTER_AIC)
 
@@ -171,22 +167,21 @@ summary(NTL_LTER_AIC)
 
 step(NTL_LTER_AIC)
 
-# The step() function allows us to see which variables.... 
-
-# The year variable does not have a strong correlation, so we can remove this variable from the next regression. (it is still recommended)
-
+# The step() function allows us to see which variables 
 
 #10
 
-temp.multiple.regression <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + daynum)
+temp.multiple.regression <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + year4 + daynum)
 summary(temp.multiple.regression)
+
+#
 
 
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
+> Answer: improves it slightly because it goes from (old r^2 to new r^2)
 
 
 
@@ -198,20 +193,39 @@ summary(temp.multiple.regression)
 ```{r anova.model}
 #12
 
+NTL_LTER_ANOVA <- aov(data = NTL_LTER_July, temperature_C ~ lakename)
+summary(NTL_LTER_ANOVA)
+
+# I use the aov() function to run the anova...
+
+NTL_LTER_ANOVA2 <- lm(data = NTL_LTER_July, temperature_C ~ lakename)
+summary(NTL_LTER_ANOVA2)
+
+# 
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
+> Answer: In this case there was a significant difference in mean temperatures among the lakes because the p-value in the aov() function is less than 0.001. This means we would reject the null hypothesis. 
 
 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
-```{r scatterplot.2}
+```{r scatterplot.2, fig.height = 5, fig.width = 6, warning = FALSE}}
 #14.
+temperature_depth_plot <- 
+  ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C, color = lakename)) +
+  geom_point(alpha = 0.5) +
+  xlab("Depth") +
+  ylab("Temperature °C") +
+  labs(color = "Lake Name") +
+  geom_smooth(method = "lm", se = FALSE) +
+  ylim(0,35)
+print(temperature_depth_plot)
 
+# To plot the temperature by depth for the different lake names I used the ggplot() 
 
 ```
 
@@ -220,24 +234,37 @@ summary(temp.multiple.regression)
 ```{r tukey.test}
 #15
 
+TukeyHSD(NTL_LTER_ANOVA)
 
+Lake.Anova.Groups <- HSD.test(NTL_LTER_ANOVA, "lakename", group = TRUE)
+Lake.Anova.Groups
+
+# I use the tukeyHSD() function with the ANOVA created earlier to determine which lakes have different names. 
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
+>Answer: The lakes with the same mean as Peter Lake are Paul Lake and Ward Lake. There is not a lake in the group that is statistically different from all the other lakes, and you can see this in the HSD.test() because there is not a singular lake that is the only one in any of the groups (a through e).  
 
  
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
+>Answer: If we were just looking at Peter and Paul Lake we could run a 2-way Anova to see whether they have distinct mean temperature. 
 
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
+NTL_LTER_July_Wrangle <- 
+  NTL_LTER_July %>%
+  filter(lakename == "Crampton Lake" | lakename == "Ward Lake" )
+
+NTL_LTER_twosample <- t.test(NTL_LTER_July_Wrangle$temperature_C ~ NTL_LTER_July_Wrangle$lakename)
+NTL_LTER_twosample
+
+
 
 ```
 
