@@ -76,8 +76,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: Mean lake temperature recorded during July does not change with depth across all lakes. 
-Ha: Mean lake temperature recorded during July does change with depth across all lakes. 
+H0: Mean lake temperature recorded during July does not change with depth across all lakes. The intercept and the slope are both equal to zero. 
+Ha: Mean lake temperature recorded during July does change with depth across all lakes. The intercept and the slope are not equal to zero.  
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -116,7 +116,7 @@ Temperature_depth <- ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C)) +
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: The figure suggests that as depth increases, temperature decreases, and this is shown in the negative linear trend. The shallower depths have the most variability in temperature as compared to deeper temperature recordings, and there appear to be less recordings at the deeper depths, so this could account for the lack of variability. The variation in temperatures suggests that there might not be a strong linear relationship. 
+> Answer: The figure suggests that as depth increases, temperature decreases, and this is shown in the negative linear trend. The shallower depths have the most variability in temperature as compared to deeper temperature recordings, and there appear to be less recordings at the deeper depths, so this could explain the lack of variability. The variation in temperatures suggests that there might not be a strong linear relationship. 
 
 
 7. Perform a linear regression to test the relationship and display the results
@@ -134,7 +134,7 @@ summary(NTL_LTER_lm)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer: 73.87% of the variability in temperature is explained by changes in depth. The degrees of freedom is 9726, which is the number of observations minus the number of variables. (explain how its based). There is a statistically significant relationship between temperature and depth because the p-value is smaller than 0.05. Temperature is predicted to change by -1.94621 for every 1m in depth. 
+> Answer: 73.87% of the variability in temperature is explained by changes in depth. The degrees of freedom is 9726, which is the number of observations minus the number of explanatory variables. There is a statistically significant relationship between temperature and depth because the p-value is smaller than 0.05 meaning we would reject the null hypothesis. Temperature is predicted to change by -1.94621 for every 1m in depth. 
 
 ---
 
@@ -153,12 +153,12 @@ NTL_LTER_July_predict <-
   NTL_LTER_July %>%
   select(year4:temperature_C)
 
-# we create a new data set that takes out the lake name, so we are able to run a correlation (which needs to be factors) 
+# we create a new data set that takes out the lake name, so we are able to run a correlation (which needs to be factors).
 
 NTL_LTER_July_predict_corr <- cor(NTL_LTER_July_predict)
 corrplot(NTL_LTER_July_predict_corr, method = "ellipse")
 
-# we can use the cor() to run the correlation, and then we can use the corrplot to plot the correlation. The ellipses show us which variables have the strongest correlations. 
+# we can use the cor() to run the correlation, and then we can use the corrplot to plot the correlation. The ellipses show us which variables have the strongest correlations. Although this is not always neccessary, it is a good way to visualize the correlations in the variables.
 
 NTL_LTER_AIC <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + year4 + daynum)
 summary(NTL_LTER_AIC)
@@ -167,7 +167,7 @@ summary(NTL_LTER_AIC)
 
 step(NTL_LTER_AIC)
 
-# The step() function allows us to see which variables 
+# The step() function allows us to see which variables we do not need to include in our regression. The step() function shows that we do not need to exclude any of the variables.
 
 #10
 
