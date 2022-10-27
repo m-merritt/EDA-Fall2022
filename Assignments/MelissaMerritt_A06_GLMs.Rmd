@@ -12,7 +12,7 @@ editor_options:
 #For it to work, the "formatR" package needs to be installed
 
 #install.packages('formatR')
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
 ```
 
 ## OVERVIEW
@@ -250,7 +250,7 @@ Lake.Anova.Groups
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: If we were just looking at Peter and Paul Lake we could run a 2-way Anova to see whether they have distinct mean temperature. 
+>Answer: If we were just looking at Peter and Paul Lake we could run a two-sample T-test. This would allow us to com....
 
 
 
@@ -263,9 +263,6 @@ NTL_LTER_July_Wrangle <-
 
 NTL_LTER_twosample <- t.test(NTL_LTER_July_Wrangle$temperature_C ~ NTL_LTER_July_Wrangle$lakename)
 NTL_LTER_twosample
-
-
-
 ```
 
->Answer: 
+>Answer: Statistically the July temperatures for Crampton and Ward Lake are the same because the p-value is not less than 0.05, so we accept the null hypothesis. This does match our answer for part 16 because both the lakes are in group b. 
