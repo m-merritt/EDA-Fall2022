@@ -174,16 +174,14 @@ step(NTL_LTER_AIC)
 temp.multiple.regression <- lm(data = NTL_LTER_July_predict, temperature_C ~ depth + year4 + daynum)
 summary(temp.multiple.regression)
 
-#
+# Once we know which variables we are keeping (in this case all of them), we can run a regression for the data using the lm() function. Then use summary() function to show the results. 
 
 
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: improves it slightly because it goes from (old r^2 to new r^2)
-
-
+> Answer: The AIC Method suggests we keep all the variables (year, daynum, temperature, and depth). This model explains 74.11% of the observed variance, so it is slightly better than the model only using depth (73.87%), but by a very small margin. 
 
 ---
 ## Analysis of Variance
@@ -196,24 +194,23 @@ summary(temp.multiple.regression)
 NTL_LTER_ANOVA <- aov(data = NTL_LTER_July, temperature_C ~ lakename)
 summary(NTL_LTER_ANOVA)
 
-# I use the aov() function to run the anova...
+# I use the aov() function to run the ANOVA. The summary() gives us the results of this ANOVA.
 
 NTL_LTER_ANOVA2 <- lm(data = NTL_LTER_July, temperature_C ~ lakename)
 summary(NTL_LTER_ANOVA2)
 
-# 
+# I use the lm() function to run the ANOVA, and this will give us a more detailed summary. The summary() shows us the results. 
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: In this case there was a significant difference in mean temperatures among the lakes because the p-value in the aov() function is less than 0.001. This means we would reject the null hypothesis. 
-
+> Answer: In this case there was a significant difference in mean temperatures among the lakes because the p-value in the both ANOVAs are less than 0.001. This means we would reject the null hypothesis. 
 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
-```{r scatterplot.2, fig.height = 5, fig.width = 6, warning = FALSE}}
+```{r scatterplot.2, fig.height = 5, fig.width = 6, warning = FALSE}
 #14.
 temperature_depth_plot <- 
   ggplot(NTL_LTER_July, aes(x = depth, y = temperature_C, color = lakename)) +
@@ -225,7 +222,7 @@ temperature_depth_plot <-
   ylim(0,35)
 print(temperature_depth_plot)
 
-# To plot the temperature by depth for the different lake names I used the ggplot() 
+# To plot the temperature by depth for the different lake names I use the ggplot() function and included the data, and in the aes() function, I included the x and y axis and the color to be based on lakename. To create the scatterplot, I used the geom_point() function with alpha = 0.5 to make the transparency 50%. I used the xlab, ylab, and labs functions to label the axes and lenged respectively. I use the geom_smooth() function with the method being the regression line (lm), and se = FALSE to create linear regressions lines for each lake that do not have confidence intervals. Lastly, I used ylim() to set the limit of the y axis to improve the "look" of the graph. The print() function allows me to view the graph. 
 
 ```
 
@@ -239,7 +236,7 @@ TukeyHSD(NTL_LTER_ANOVA)
 Lake.Anova.Groups <- HSD.test(NTL_LTER_ANOVA, "lakename", group = TRUE)
 Lake.Anova.Groups
 
-# I use the tukeyHSD() function with the ANOVA created earlier to determine which lakes have different names. 
+# I use the tukeyHSD() function with the ANOVA created earlier to determine which lakes have different names. The HSD.test() allows me to see which lakes have different means and which are statistically the same. 
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
@@ -250,8 +247,7 @@ Lake.Anova.Groups
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: If we were just looking at Peter and Paul Lake we could run a two-sample T-test. This would allow us to com....
-
+>Answer: If we were just looking at Peter and Paul Lake we could run a two-sample T-test. This would allow us to test if the mean of two samples are equivalent. 
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
@@ -261,8 +257,12 @@ NTL_LTER_July_Wrangle <-
   NTL_LTER_July %>%
   filter(lakename == "Crampton Lake" | lakename == "Ward Lake" )
 
+# First, I wrangled the data using the pipe function (%>%). This allowed me to isolate just Crampton and Ward Lake in our dataset. 
+
 NTL_LTER_twosample <- t.test(NTL_LTER_July_Wrangle$temperature_C ~ NTL_LTER_July_Wrangle$lakename)
 NTL_LTER_twosample
+
+# I used the t.test() function to run the two sample t-test that will compare the mean temperatures for Ward and Crampton lake to see if they are statistically the same or different. 
 ```
 
 >Answer: Statistically the July temperatures for Crampton and Ward Lake are the same because the p-value is not less than 0.05, so we accept the null hypothesis. This does match our answer for part 16 because both the lakes are in group b. 
