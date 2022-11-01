@@ -137,7 +137,7 @@ summary(GaringerOzone)
 # Summary shows us that we have 63 NAs in the data frame. 
 
 GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
-# we can use the na.approx() function from the zoo package to interpolate the missing daily data for ozone concentration. 
+# we can use the na.approx() function from the zoo package to interpolate the missing daily data for ozone concentration.
 
 ```
 
@@ -151,13 +151,17 @@ GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- na.approx(GaringerOzone$Da
 GaringerOzone.monthly <- GaringerOzone %>%
   mutate(Year = year(Date), 
          Month = month(Date)) %>%
-  group_by(Month, Year) %>%
+  group_by(Year, Month) %>%
   summarise(Mean_ozone_concentration = mean(Daily.Max.8.hour.Ozone.Concentration))
+
+# changed month year in group_by to year month and that gave the correct results in the end, but change the seasonal results !!
 
 # Using the pipe function (%>%) I was able to mutate() and add the year and month columns using the year() and month() functions. Then we can use the group_by() function to specify that we want to use the rows that have the same values in month and year column for the means. We use the summarise() function to then get the mean. 
   
 GaringerOzone.monthly <- GaringerOzone.monthly %>%
-  mutate("FirstDay"=my(paste0(Month,"-",Year)))
+  mutate(FirstDay=my(paste0(Month,"-",Year)))
+
+class(GaringerOzone.monthly$FirstDay)
 
 # In the same data frame we create a new column using the mutate() function, that has the date organized as the first day of each month. The my() function is from the lubridate package, and extracts the month and year to create the format we want for graphing. 
 ```
@@ -167,10 +171,10 @@ GaringerOzone.monthly <- GaringerOzone.monthly %>%
 
 ```{r}
 #10
-GaringerOzone.daily.ts <- ts(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration, start = c(2010,1), end = c(2020,12), frequency = 365)
+GaringerOzone.daily.ts <- ts(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration, start = c(2010,1), frequency = 365)
   
-GaringerOzone.monthly.ts <- ts(GaringerOzone.monthly$Mean_ozone_concentration, start = c(2010,1), end = c(2019,12), frequency = 12)
-
+GaringerOzone.monthly.ts <- ts(GaringerOzone.monthly$Mean_ozone_concentration, start = c(2010,1), frequency = 12)
+head(GaringerOzone.monthly.ts,10)
 # To create the time series focusing on ozone concentration we can use the ts() function. Within the function we specify the start and end dates along with the frequency. For the frequency of the daily time series, we use 365 and we use 12 for the month frequency. 
 
 ```
@@ -234,16 +238,20 @@ print(Mean_monthly_ozone_plot)
 #15
 GaringerOzone.monthly_sub <- as.data.frame(monthly.decomp$time.series[,2:3])
 
-Monthly.Garinger.nonseasonal <- 
+Monthly.Garinger.nonseasonal.components <- GaringerOzone.monthly_sub %>%
   mutate(GaringerOzone.monthly_sub, 
-         Observed = GaringerOzone.monthly$Mean_ozone_concentration,
-         Date = GaringerOzone.monthly$FirstDay)
+         Data = (GaringerOzone.monthly_sub$trend + GaringerOzone.monthly_sub$remainder),
+         Date = GaringerOzone.monthly$FirstDay) %>%
+  select(Data:Date)
+view(Monthly.Garinger.nonseasonal.components)
+
+Monthly.Garinger.nonseasonal.components.ts <- ts(Monthly.Garinger.nonseasonal.components$Data, start = c(2010,1), frequency = 12)
+
+# We can use the as.data.frame() to create a data frame with the observed and the remainder columns. 
 
 #16
-
-
-
-
+Nonseasonal.monthly.trend <- Kendall::MannKendall(Monthly.Garinger.nonseasonal.components.ts)
+summary(Nonseasonal.monthly.trend)
 ```
 
-> Answer: 
+> Answer: The p-value represents that the trend is stationary.... seasonal looking at trend including seasonality vs without seasonality 
