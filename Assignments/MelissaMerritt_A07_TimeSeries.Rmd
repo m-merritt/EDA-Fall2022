@@ -181,9 +181,14 @@ GaringerOzone.monthly.ts <- ts(GaringerOzone.monthly$Mean_ozone_concentration, s
 ```{r}
 #11
 daily.decomp <- stl(GaringerOzone.daily.ts, s.window = "periodic")
-  
 monthly.decomp <- stl(GaringerOzone.monthly.ts, s.window = "periodic")
 
+# To decompose the data we use the stl() functions with the argument s.window = "periodic" 
+
+plot(daily.decomp)
+plot(monthly.decomp)
+
+# Using the plot function we can plot the decomposition which allows us to see the variability in the remainder, trend, seasonal, data. 
 
 ```
 
