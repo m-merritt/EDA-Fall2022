@@ -154,7 +154,7 @@ GaringerOzone.monthly <- GaringerOzone %>%
   group_by(Month, Year) %>%
   summarise(Mean_ozone_concentration = mean(Daily.Max.8.hour.Ozone.Concentration))
 
-# Using the pipe function (%>%) I was able to mutate() and add the year and month columns using the year() and month() functions. Then we can use the group_by() to specify that we want to use the rows that have the same values in month and year column for the means. We use the summarise() function to then get the mean. 
+# Using the pipe function (%>%) I was able to mutate() and add the year and month columns using the year() and month() functions. Then we can use the group_by() function to specify that we want to use the rows that have the same values in month and year column for the means. We use the summarise() function to then get the mean. 
   
 GaringerOzone.monthly <- GaringerOzone.monthly %>%
   mutate("FirstDay"=my(paste0(Month,"-",Year)))
@@ -198,19 +198,27 @@ plot(monthly.decomp)
 ```{r}
 #12
 
+GaringerOzone_monthly_trend <- Kendall::SeasonalMannKendall(GaringerOzone.monthly.ts)
+summary(GaringerOzone_monthly_trend)
 
-
+# We can use the seasonalMannKendall() function with the time series for the monthly data. We can then get the summary of the trend to observe the p-value to see if there is a statistical trend. 
 ```
 
-> Answer: 
+> Answer: The seasonal Mann-Kendall is the most appropriate test because there is clear seasonality in the data throughout each year. You can see in the plot of the decomposition that seasonality explains the majority of the variability of the data. 
 
 13. Create a plot depicting mean monthly ozone concentrations over time, with both a geom_point and a geom_line layer. Edit your axis labels accordingly.
 
 ```{r}
 # 13
 
-
-
+Mean_monthly_ozone_plot <- ggplot(GaringerOzone.monthly, aes(x = FirstDay, y = Mean_ozone_concentration)) +
+  geom_point() +
+  geom_line() +
+  scale_x_date(labels = date_format("%m-%Y"), date_breaks = "6 months") +
+  theme(axis.text.x=element_text(angle=85, hjust=1)) +
+  ylab("Mean Ozone Concentration (ppm)") +
+  xlab("Date")
+print(Mean_monthly_ozone_plot)
 
 ```
 
@@ -224,8 +232,12 @@ plot(monthly.decomp)
 
 ```{r}
 #15
+GaringerOzone.monthly_sub <- as.data.frame(monthly.decomp$time.series[,2:3])
 
-
+Monthly.Garinger.nonseasonal <- 
+  mutate(GaringerOzone.monthly_sub, 
+         Observed = GaringerOzone.monthly$Mean_ozone_concentration,
+         Date = GaringerOzone.monthly$FirstDay)
 
 #16
 
