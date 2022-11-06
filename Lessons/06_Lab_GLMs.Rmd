@@ -16,8 +16,11 @@ editor_options:
 
 ## Set up
 ```{r, message = FALSE}
+<<<<<<< HEAD
 install.packages("agricolae")
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 library(tidyverse)
 library(agricolae)   
 
@@ -48,6 +51,7 @@ Create three plots, each with appropriately formatted axes and legends. Choose a
 
 ```{r}
 #Exercise 1:
+<<<<<<< HEAD
 Density_plot <- ggplot(EPAair, aes(X=Ozone, fill = as.factor(Year))) + 
   geom_density(alpha = 0.5) +
   scale_fill_manual(values = c("darkgreen", "darkblue")) +
@@ -62,6 +66,10 @@ Density_plot <- ggplot(EPAair, aes(X=Ozone, fill = as.factor(Year))) +
   
   
 # code for these are in my camera roll
+=======
+
+
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 ```
 
 ## Linear Regression
@@ -70,6 +78,7 @@ Important components of the linear regression are the correlation and the R-squa
 
 For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 
+<<<<<<< HEAD
 ```{r, fig.height = 3, fig.width = 4}
 
 #Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
@@ -79,10 +88,17 @@ summary(EPA_regression)
 
 # we assume PM2.5 is our response (so y)
 # a small r^2 value means that there are others things that are predictor for the variability in PM2.5 (not just ozone)
+=======
+```{r}
+
+#Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
+
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 
 
 #Exercise 3: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
 
+<<<<<<< HEAD
 EPA_regression_plot <- 
   ggplot(EPAair, aes(x=Ozone, y=PM2.5)) +
     geom_point() +
@@ -92,6 +108,9 @@ print(EPA_regression_plot)
 #next step is trying to add more variables to model 
 
 #check phone for pictures with more info
+=======
+
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 
 ```
 
@@ -104,6 +123,7 @@ What other variables can we add to improve model?
 
 #Exercise 4: Build correlation plots and identify more possible explanatory variables to add to the regression.
 
+<<<<<<< HEAD
 install.packages("corrplot")
 library(corrplot)
 library(dplyr)
@@ -141,16 +161,27 @@ summary(EPAAIC)
 # shows similar results to what we got with the corrplot() 
 
 #results from step() show that ozone and month are correlated 
+=======
+
+
+
+#Exercise 5: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 5?
+
+
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 
 
 #Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 5. 
 
+<<<<<<< HEAD
 AICmodelEPA <- lm(data = EPAair_predict, PM2.5 ~ Ozone + Mean_latitude + Month + Mean_longitude)
 summary(AICmodelEPA)
 
 #take out year because it wasn't a good variable for our regression, so with the new variables we get a higher r-squared 
 
 # the p-values in this regression show that there is a relationship between month and ozone with pm2.5 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 ```
 
 
@@ -190,6 +221,7 @@ print(Litter.Totals.plot)
 ```{r}
 #Exercise 7: Improve the plot```
 
+<<<<<<< HEAD
 
 #a. order by groups - create the column groups in your dataset - order by alphabetical 
 
@@ -205,3 +237,5 @@ assign.group <- function(site)
   
 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b

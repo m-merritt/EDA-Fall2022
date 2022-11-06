@@ -50,15 +50,21 @@ O3plot1 <- ggplot(EPAair) +
   theme_gray()
 print(O3plot1)
 
+<<<<<<< HEAD
 #theme_gray is the default
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 O3plot2 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone)) +
   theme_bw()
 print(O3plot2)
 
+<<<<<<< HEAD
 #classic light on dark theme 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 O3plot3 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone)) +
   theme_light()
@@ -68,13 +74,20 @@ O3plot4 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone)) +
   theme_classic()
 print(O3plot4)
+<<<<<<< HEAD
 
 # change from one theme to another change background/grid lines/ etc. 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 ```
 
 Notice that some aspects of your graph have not been adjusted, including: 
 
+<<<<<<< HEAD
 * text size (default is 11)
+=======
+* text size
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 * axis label colors
 * legend position and justification
 
@@ -85,9 +98,12 @@ mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top") #alternative: legend.position + legend.justification
 
+<<<<<<< HEAD
 
 #define a theme within ggplot() - themeclassic but change a few things (increase font size) and change the text elements and the legend position 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 # options: call the theme in each plot or set the theme at the start. 
 
 O3plot5 <- ggplot(EPAair) +
@@ -95,9 +111,12 @@ O3plot5 <- ggplot(EPAair) +
   mytheme
 print(O3plot5)  
 
+<<<<<<< HEAD
 # you can set the theme within the definition of your plot 
 # this is the first way of defining a theme - you can set the theme to be your theme 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 theme_set(mytheme)
 
 O3plot6 <- ggplot(EPAair) +
@@ -124,6 +143,7 @@ O3plot7 <- ggplot(EPAair, aes(x = Date, y = Ozone)) +
   theme(axis.text.x = element_text(angle = 45,  hjust = 1))
 print(O3plot7)  
 
+<<<<<<< HEAD
 #this plot is adding a horizontal line that crosses at 50 and 100 (geom_hline) - this is useful when your gridlines might not be useful at your specific plot 
 # geom_text you can define where you want a point - and just want good to be printed out 
 # hjust is just the horizontal alighnment 
@@ -132,6 +152,8 @@ print(O3plot7)
 #change the axis text - can angle and horizontal justification 
 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 ```
 
 ### Color palettes
@@ -177,9 +199,15 @@ nationalparkcolors (package)
 * https://github.com/katiejolly/nationalparkcolors
 
 ```{r, warning = FALSE}
+<<<<<<< HEAD
  install.packages("viridis")
  install.packages("RColorBrewer")
  install.packages("colormap")
+=======
+# install.packages("viridis")
+# install.packages("RColorBrewer")
+# install.packages("colormap")
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 library(viridis)
 library(RColorBrewer)
 library(colormap)
@@ -189,9 +217,12 @@ scales::show_col(colormap(colormap = colormaps$inferno, nshades = 16))
 scales::show_col(colormap(colormap = colormaps$magma, nshades = 16))
 display.brewer.all(n = 9)
 
+<<<<<<< HEAD
 
 #these ^ are many of the different color packets 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 NvsP <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth, shape = lakename)) +
   geom_point() 
@@ -203,7 +234,11 @@ print(NvsP)
 NvsP2 <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth, shape = lakename)) +
   geom_point(alpha = 0.7, size = 2.5) +
+<<<<<<< HEAD
   labs(color = "Depth", shape = "Lake name") + # change your legend labels here
+=======
+  #labs() + # change your legend labels here
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
   scale_shape_manual(values = c(15, 17)) +
   #scale_color_distiller(palette = "Blues", direction = 1) + # use scale_color_brewer for discrete variables
   scale_color_viridis(option = "magma", direction = -1) +
@@ -211,9 +246,12 @@ NvsP2 <-
         legend.text = element_text(size = 12), legend.title = element_text(size = 12))
 print(NvsP2)
 
+<<<<<<< HEAD
 
 #we will do the below section in the lab section. 
 
+=======
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 # change your y axis label to list concentration in micrograms per liter
 # remove your x axis label
 # change labels for nutrients in the legend
@@ -237,6 +275,7 @@ In situations where facets don't fill our needs to place multiple plots on a pag
 A useful guide for aligning plots by axis can be found here: https://wilkelab.org/cowplot/articles/aligning_plots.html
 
 ```{r, fig.height = 7, fig.width = 6}
+<<<<<<< HEAD
 install.packages("cowplot")
 library(cowplot)
 plot_grid(NvsP2, Nutrientplot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
@@ -244,6 +283,12 @@ plot_grid(NvsP2, Nutrientplot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
 
 # how can you have multiple plots on a page 
 # cowplots will allow you to arrange your plots 
+=======
+#install.packages("cowplot")
+library(cowplot)
+plot_grid(NvsP2, Nutrientplot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
+
+>>>>>>> fc8c57328ec11d4acfebcceb37adf859baecba8b
 ```
 
 ### Saving plots
