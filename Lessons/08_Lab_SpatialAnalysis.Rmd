@@ -80,11 +80,13 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
+huc8_sf <- st_read("./Data/Spatial/NCHUC8.shp")
 
-
+st_crs(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
 
+mapview(huc8_sf, zcol = "ACRES")
 
 ```
 
@@ -95,11 +97,14 @@ mapView(counties_sf, zcol = "AWATER")
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
 
-
+upper_nuese_huc8 <- st_read("./Data/Spatial/NCHUC8.shp") %>%
+  filter(SUBBASIN == "Upper Neuse")
 
 #Create a map
 
+mapview(huc8_sf, col.regions = "orange", alpha.regions =1)+ mapview(upper_nuese_huc8, col.regions="purple") 
 
+# Use col.regions or fill to change the entire polygon colors, in this case color = was giving me only the borders changing. 
 ```
 
 
@@ -115,16 +120,24 @@ The URL '<https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Ene
 ```{r}
 #Compute HUC8 wind energy
 
+huc8_wind <- read.csv('https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv', colClasses = c('HUC_12' = 'factor')) %>%
+    mutate(HUC_8 = substr(HUC_12,1,8)) %>%  #substrate command 
+    group_by(HUC_8) %>%
+  summarize(sumwind = sum(AvgWindEnergy))
 
-
+#needs to be read in using (read.csv) or else you will not be able to summarize 
 
 #Join to HUC_8 features
 
-
+huc8_wind_sf <- merge(x = huc8_sf, 
+                      y = huc8_wind, 
+                      by.x = "HUC_8", 
+                      by.y = "HUC_8")
 
 
 #View the outputs
 
+mapview(huc8_wind_sf, zcol = "sumwind")
 
 
 ```
@@ -135,14 +148,21 @@ Aggregate the HUC_8 data on the `DWQ_Basin` attribute, computing the sum of the 
 ```{r Aggregate the HUC data on an attribute, saving as huc2_sf}
 #List the unique values in the DWQ_Basin field
 
+unique(huc8_wind_sf$DWQ_Basin)
 
+# use to list the unique values 
 
 #Summarize on DWQ Basin value
 
+huc2_basin <- huc8_wind_sf %>%
+  group_by(DWQ_Basin) %>%
+  summarise(Total.Acres = sum(ACRES), Total.SQ_Miles = sum(SQ_MILES))
+
+#dissolve is done by the group_by() function 
 
 
 #Map the data
-
+mapview(huc8_basin, zcol = "Total.Acres")
 
 ```
 
@@ -167,6 +187,11 @@ huc2_utm <-
 Select the counties in the "Triangle" (Chatham, Durham, Orange, and Wake). Then select the HUC_8s that touch these counties. And finally, select the portions of the HUC_8s that occur within these counties.
 
 ```{r EXERCISE: Clipping}
+
+#this is in my camera roll... 
+nuese_sf <- 
+
+
 #Select the Triangle counties from the sf_counties dataframe
 
 
