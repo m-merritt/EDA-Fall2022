@@ -1,6 +1,6 @@
 ---
 title: "Assignment 8: Spatial Analysis in R"
-author: "Student Name"
+author: "Melissa Merritt"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -31,10 +31,16 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 
 ```{r Prepare workspace}
 #1.
-
+getwd() #check working directory
 
 #2. 
 
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(mapview)
+
+#library() function to import packages
 
 ```
 
@@ -48,19 +54,28 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
+Nebraska <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
+  filter(STATEFP == 31)
 
+# Use st_read() to import the data file into an sf dataframe. Use filter() to only keep Nebraska counties. 
 
 #4. Reveal the CRS of the counties features
 
+st_crs(Nebraska)
+
+# Use st_crs() to show that the coordinate reference system is NAD83. 
 
 #5. Plot the data
+
+mapview(Nebraska)
+
+# Use mapview() function to plot the data on a map. 
 
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look the EPSG code on <https://spatialreference.org>) 
 
-> ANSWER: 
-> 
+> ANSWER: The EPSG code of the Counties dataset is 4269. This is a geographic reference system. The Datum is North American Datum 1983. 
 
 
 ### Read in gage locations csv as a dataframe, then display the column names it contains
@@ -74,16 +89,18 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
 
+Gage_data <- read.csv("./Data/Raw/NWIS_SiteInfo_NE_RAW.csv")
+
+# we can use read.csv() function to import the data. 
 
 #8. Reveal the names of the columns
 
+colnames(Gage_data) #use to see the column names
 
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
-> ANSWER:
-> 
-
+> ANSWER: The dec_long_va and dec_lat_va columns are the x and y coordinate values, respectively. 
 
 ### Convert the dataframe to a spatial features ("sf") dataframe
 
@@ -94,6 +111,7 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Convert dataframe to sf dataframe}
 #10. Convert to an sf object
+
 
 
 #11. Re-examine the column names
