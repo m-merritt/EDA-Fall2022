@@ -54,20 +54,20 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
-Nebraska <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
+Nebraska_counties <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
   filter(STATEFP == 31)
 
 # Use st_read() to import the data file into an sf dataframe. Use filter() to only keep Nebraska counties. 
 
 #4. Reveal the CRS of the counties features
 
-st_crs(Nebraska)
+st_crs(Nebraska_counties)
 
 # Use st_crs() to show that the coordinate reference system is NAD83. 
 
 #5. Plot the data
 
-mapview(Nebraska)
+mapview(Nebraska_counties)
 
 # Use mapview() function to plot the data on a map. 
 
@@ -123,7 +123,7 @@ colnames(Gage_data_sf) #use to see each column name.
 
 12. What new field(s) appear in the sf dataframe created? What field(s), if any, disappeared?
 
->ANSWER: The new column that was created is the geometry column 
+>ANSWER: The new field that appeared is the geometry column that contains the spatial data. The fields that disappeared are the dat_lat_va and the dat_long_va because these fields were combined to create the geometry field. 
 
 
 ### Plot the gage locations on top of the counties
@@ -136,7 +136,16 @@ colnames(Gage_data_sf) #use to see each column name.
 ```{r Plot the spatial features}
 #13. Plot the gage locations atop the county features
 
+gage_locations_plot <- ggplot() +
+  geom_sf(data = Nebraska_counties, fill = 'orange') +
+  geom_sf(data = Gage_data_sf, color = 'blue', size = 0.9) +
+  labs(title = "NWIS Gage Locations in Nebraska") +
+  labs(subtitle = "Melissa Merritt") + 
+  xlab("Longitude (°W)") +
+  ylab("Latitude (°N)")
+print(gage_locations_plot) 
 
+# We can use the ggplot() function to plot the county and gage location datasets. Using the geom_sf() function we can define the data we are using along with colors to show the contrast. It is important to have the gage sites data above the counties data, so it overlays on the display. Using the lab(), xlab(), and ylab() functions we can label the map and the axes, respectively. Then we can use the print() function to see the map display. 
 ```
 
 
@@ -155,18 +164,36 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 ```{r}
 #14. Read the site flow data into a data frame
 
+gage_height_data <- read.csv("./Data/Raw/NWIS_SiteFlowData_NE_RAW.csv")
+
+# Using the read.csv() function we can read the raw dataset in as a dataframe. 
+
 
 #15. Show the column names
+
+colnames(gage_height_data) #use to check column names. 
 
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
 
+gage_data_join <- merge(x = Gage_data_sf, 
+                        y = gage_height_data, 
+                        by.x = "site_no", 
+                        by.y = "site_no") 
+
+# We can use the the merge() function to combine the two dataframes shown in the "x =" and "y =" arguments. The by.x and by.y arguments let us define the attributes we want to use to join the data. 
+
 
 #17. Show the column names of the joined dataset
+
+colnames(gage_data_join) #use to check column names. 
 
 
 #18. Show the dimensions of this joined dataset
 
+dim(gage_data_join)
+
+#we can use the dim() function to check the dimensions of the dataset. 
 
 ```
 
@@ -179,6 +206,12 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 ```{r}
 #Map the points, sized by gage height
 
+mapview(gage_data_join, 
+        zcol = "gage_ht",
+        legend = FALSE) + 
+  mapview(Nebraska_counties)
+
+#figure out how to change color of underlaying map and change sizes of points. 
 
 ```
 
@@ -197,9 +230,15 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 ```{r}
 #20 Transform the counties and gage location datasets to UTM Zone 14
 
+gage_data_utm <- st_transform(gage_data_join, crs = 32614)
+NE_counties_utm <- st_transform(Nebraska_counties, crs = 32614)
 
 #21 Plot the data
 
+mapview(gage_data_utm, 
+        col.regions = "blue") +
+  mapview(NE_counties_utm, 
+          col.regions = "gray")
 
 ```
 
@@ -217,6 +256,7 @@ Now let's zoom into a particular county and examine the gages located there.
 
 ```{r}
 #22 Select the county
+
 
 
 #23 Select gages within the selected county
