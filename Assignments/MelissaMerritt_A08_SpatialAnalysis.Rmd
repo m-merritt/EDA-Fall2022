@@ -111,18 +111,19 @@ colnames(Gage_data) #use to see the column names
 
 ```{r Convert dataframe to sf dataframe}
 #10. Convert to an sf object
+Gage_data_sf <- st_as_sf(Gage_data, coords = c('dec_long_va', 'dec_lat_va'), crs=4269)
 
-
+# We can use the st_as_sf() function to convert the dataframe to an sf dataframe. We need to specify the spatial data (longitude and latitude) with the coords = argument. Since it is the same coordinate system, we can use crs=4269. 
 
 #11. Re-examine the column names
 
+colnames(Gage_data_sf) #use to see each column name. 
 
 ```
 
 12. What new field(s) appear in the sf dataframe created? What field(s), if any, disappeared?
 
->ANSWER: 
->
+>ANSWER: The new column that was created is the geometry column 
 
 
 ### Plot the gage locations on top of the counties
