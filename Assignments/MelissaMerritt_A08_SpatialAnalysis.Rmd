@@ -75,7 +75,7 @@ mapview(Nebraska_counties)
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look the EPSG code on <https://spatialreference.org>) 
 
-> ANSWER: The EPSG code of the Counties dataset is 4269. This is a geographic reference system. The Datum is North American Datum 1983. 
+> ANSWER: The EPSG code of the Counties dataset is 4269. This is a geographic coordinate reference system (angular coordinate units). The Datum is North American Datum 1983. 
 
 
 ### Read in gage locations csv as a dataframe, then display the column names it contains
@@ -181,13 +181,12 @@ gage_data_join <- merge(x = Gage_data_sf,
                         by.x = "site_no", 
                         by.y = "site_no") 
 
-# We can use the the merge() function to combine the two dataframes shown in the "x =" and "y =" arguments. The by.x and by.y arguments let us define the attributes we want to use to join the data. 
+# We can use the the merge() function to combine the two dataframes shown in the "x =" and "y =" arguments. The by.x= and by.y= arguments let us define the attributes we want to use to join the data. Merge only includes spatial features where both tables have data. 
 
 
 #17. Show the column names of the joined dataset
 
 colnames(gage_data_join) #use to check column names. 
-
 
 #18. Show the dimensions of this joined dataset
 
@@ -206,10 +205,16 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 ```{r}
 #Map the points, sized by gage height
 
-mapview(gage_data_join, 
-        zcol = "gage_ht",
-        legend = FALSE) + 
-  mapview(Nebraska_counties)
+gage_height_plot <- ggplot() +
+  geom_sf(data = Nebraska_counties) + 
+  geom_sf(data = gage_data_join, aes(size = gage_data_join$gage_ht, fill = gage_data_join$gage_ht), pch = 21) + 
+  guides(size = FALSE) +
+  labs(fill = "Gage Height (m)") +
+  xlab("Longitude (°W)") +
+  ylab("Latitude (°N)") + 
+  labs(title = "NWIS Gage Heights in Nebraska") + 
+  labs(subtitle = "Melissa Merritt")
+print(gage_height_plot)
 
 #figure out how to change color of underlaying map and change sizes of points. 
 
@@ -233,10 +238,13 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 gage_data_utm <- st_transform(gage_data_join, crs = 32614)
 NE_counties_utm <- st_transform(Nebraska_counties, crs = 32614)
 
+# To transform 
+
 #21 Plot the data
 
 mapview(gage_data_utm, 
-        col.regions = "blue") +
+        col.regions = "blue", 
+        cex = 3) +
   mapview(NE_counties_utm, 
           col.regions = "gray")
 
@@ -257,13 +265,24 @@ Now let's zoom into a particular county and examine the gages located there.
 ```{r}
 #22 Select the county
 
+Lancaster_county <- NE_counties_utm %>%
+  filter(NAME == 'Lancaster')
 
+# To select just Lancaster county, we can use the filter() function within a pipe (%>%) to specificy by the name column.  
 
 #23 Select gages within the selected county
 
+Gage_lancaster_intersect <- gage_data_utm[Lancaster_county,]
+
+# To chose the sites within Lancaster, we can use a matrix to subset the data. 
 
 #24 Plot
+mapview(NE_counties_utm, col.regions = "gray", 
+        alpha.regions = 1) +
+mapview(Lancaster_county, col.regions = "pink", 
+        alpha.regions = 1) +
+mapview(Gage_lancaster_intersect, col.regions = "blue", 
+          cex = 2) 
 
-
-
+# To create the zoom in map to Lancaster county, we can layer with mapview. For the first layer we use the counties dataset. The second layer is the Lancaster county polygon. The third layer is the locations of the gage sites within Lancaster county. We can use alpha.regions to change the transparency. We can use col.regions to change the colors, and cex can change the size of the points. 
 ```
