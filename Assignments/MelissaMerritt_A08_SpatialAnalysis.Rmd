@@ -1,11 +1,14 @@
 ---
-title: "Assignment 8: Spatial Analysis in R"
+title: 'Assignment 8: Spatial Analysis in R'
 author: "Melissa Merritt"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 geometry: margin=2.54cm
-editor_options: 
+editor_options:
   chunk_output_type: console
-  markdown: 
+  markdown:
     wrap: 72
 ---
 
@@ -52,7 +55,7 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 4. Reveal the dataset's coordinate reference system
 5. Plot the records as a map (using `mapview` or `ggplot`)
 
-```{r Read the county data into an sf dataframe}
+```{r}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
 Nebraska_counties <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
   filter(STATEFP == 31)
@@ -216,7 +219,7 @@ gage_height_plot <- ggplot() +
   labs(subtitle = "Melissa Merritt")
 print(gage_height_plot)
 
-#figure out how to change color of underlaying map and change sizes of points. 
+# To create this map, we can use the ggplot() function. Within ggplot we can use the geom_sf() functions to plot both data sets spatially. For the gage data points, we can use the aes() function to change the size to be based on gage height and the color to be based on gage height. pch=21 makes the points able to fill with a color. We can use the guides() function to take away the second legend that was repetitive. We can use the labs() function to label the legend, the title, and the subtitle. We can then use the xlab and ylab functions to label the x and y axes respectively. Lastly, we can use the print() function to view the plot. 
 
 ```
 
@@ -238,7 +241,7 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 gage_data_utm <- st_transform(gage_data_join, crs = 32614)
 NE_counties_utm <- st_transform(Nebraska_counties, crs = 32614)
 
-# To transform 
+# To transform the datasets into a UTM coordinate reference system, we can use the st_transform() function, and clarify that the crs we want is the EPGS code 32614. 
 
 #21 Plot the data
 
@@ -247,6 +250,8 @@ mapview(gage_data_utm,
         cex = 3) +
   mapview(NE_counties_utm, 
           col.regions = "gray")
+
+# We can use the mapview function to plot the gage data in UTM over the county data in UTM. We can use the col.regions = argument to change the colors, and the cex = argument to change the size of the points. 
 
 ```
 
