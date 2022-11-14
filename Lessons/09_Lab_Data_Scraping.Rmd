@@ -23,10 +23,10 @@ library(viridis)
 #install.packages("rvest")
 library(rvest)
 
-#install.packages("dataRetrieval")
+install.packages("dataRetrieval")
 library(dataRetrieval)
 
-#install.packages("tidycensus")
+install.packages("tidycensus")
 library(tidycensus)
 
 # Set theme
@@ -87,6 +87,8 @@ theURL <- 'https://waterdata.usgs.gov/nwis/uv?search_site_no=02087500&period=7&f
 #Get the data, which starts on line 30
 gage_data <- read.table(theURL,skip = 29,header=TRUE,sep='\t',stringsAsFactors = T) 
 
+#"skip = " skip the first 29 lines. "sep='\t'" to ensure it is tab separated data. 
+
 #Update the column headers
 colnames(gage_data) = c("agency_cd", "site_no", "datetime", "tz_cd",
                         "discharge_cfs", "89192_00060_cd", "gage_ht_ft", "89193_00065_cd")
@@ -105,6 +107,27 @@ ggplot(gage_data,aes(x=datetime,y=discharge_cfs)) +
 > Alter the above code so that it plots the last 24 days of flow for gage 02085070
 
 ```{r pull.and.plot.other.discharge.data}
+
+#changed the site number and the period in the url. this is the only change needed. 
+
+theURL_2 <- 'https://waterdata.usgs.gov/nwis/uv?search_site_no=02085070&period=24&format=rdb'
+
+gage_data <- read.table(theURL_2,skip = 29,header=TRUE,sep='\t',stringsAsFactors = T) 
+
+#"skip = " skip the first 29 lines. "sep='\t'" to ensure it is tab separated data. 
+
+#Update the column headers
+colnames(gage_data) = c("agency_cd", "site_no", "datetime", "tz_cd",
+                        "discharge_cfs", "89192_00060_cd", "gage_ht_ft", "89193_00065_cd")
+#Tidy the data
+gage_data <- gage_data %>% 
+  select(datetime, discharge_cfs,gage_ht_ft) %>% 
+  mutate(datetime = ymd_hm(datetime))
+
+#Plot
+ggplot(gage_data,aes(x=datetime,y=discharge_cfs)) + 
+  geom_line() +
+  labs(x = "Date",y = "Discharge (cfs)")
 
 ```
 
