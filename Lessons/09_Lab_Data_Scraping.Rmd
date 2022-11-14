@@ -291,7 +291,7 @@ total_retail <- the_website %>% html_nodes(total_retail) %>% html_text()
 scrape.it()
 
 # Map the function to scrape data from 2017 to 2019
-
+df_multiyear <- map(seq(2017,2019), scrape.it) %>% bind_rows()
 
 ```
 
