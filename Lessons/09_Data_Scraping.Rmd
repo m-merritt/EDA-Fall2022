@@ -19,7 +19,7 @@ getwd()
 library(tidyverse)
 library(lubridate)
 
-#install.packages("rvest")
+install.packages("rvest")
 library(rvest)
 
 # Set theme
@@ -43,6 +43,7 @@ You might now feel that web scraping isn't always legitimate - and you're right!
 
 > For discussion: Can you give examples of ethical and unethical web scraping?
 
+Unethical if the website has clear instruction saying it is "disallowed"
 
 ## 1.1 Exploring the data we want to scrape
 
@@ -97,6 +98,8 @@ the_registrant <- webpage %>%
   html_nodes(".table tr:nth-child(1) td:nth-child(2)") %>% 
   html_text()
 the_registrant
+
+#the_registrant is extracted from the webpage - then we will go and read bits from that webpage. html_nodes is saying to go to this webpage item (tag and value pair) and look for all the elements that have these () descriptors. then pipe it to htm_text() so we get the key value text associated with the node. 
 ```
 
 EXERCISE:
@@ -123,6 +126,8 @@ avg_withdrawals <- webpage %>%
   html_text()
 avg_withdrawals
 
+#get these through selector gadget on chrome. These are character vectors, so we will have to convert to numbers later on
+
 max_withdrawals <- webpage %>% 
   html_nodes('.table:nth-child(7) td:nth-child(8) , .table:nth-child(7) td:nth-child(4)') %>%
   html_text()
@@ -134,11 +139,13 @@ max_withdrawals
 
 Now that we've scraped the data we want into our coding environment, the next step is to wrangle these data into formats we can work with more easily, i.e. a dataframe. Here, we emply the techniques we've learned earlier in this class to do this and then plot the data. 
 ```{r create.dataframe.from.scrapings}
-#Create a dataframe of withdrawals
+#Create a dataframe of withdrawals (tidy) 
 df_withdrawals <- data.frame("Month" = rep(1:12),
                              "Year" = rep(2000,12),
                              "Avg_Withdrawals_mgd" = as.numeric(avg_withdrawals),
                              "Max_Withdrawals_mgd" = as.numeric(max_withdrawals))
+
+#convert withdrawals to numeric values, and show how to identify by month and year
 
 #Modify the dataframe to include the facility name and type as well as the date (as date object)
 df_withdrawals <- df_withdrawals %>% 
@@ -146,6 +153,8 @@ df_withdrawals <- df_withdrawals %>%
          Facility_name = !!the_facility_name,
          Facility_type = !!the_facility_type,
          Date = my(paste(Month,"-",Year)))
+
+# != bangs (the bangs mean this is referring to a variable) and this is setting the month and years to dates
 
 #Plot 
 ggplot(df_withdrawals,aes(x=Date,y=Avg_Withdrawals_mgd)) + 
@@ -173,6 +182,10 @@ the_facility <- '0004-0001'
 the_year <- 2015
 the_scrape_url <- paste0(the_base_url, '/', the_facility, '/', the_year)
 print(the_scrape_url)
+
+# if you set things as variables you can control what you are veiwing by just changes the variable in your code chunk
+
+#converting a lot of inputs into variables. basically built the website that we were trying to scrape 
 
 #Retrieve the website contents 
 the_website <- read_html(the_scrape_url)
@@ -202,7 +215,7 @@ df_withdrawals <- data.frame("Month" = rep(1:12),
 ggplot(df_withdrawals,aes(x=Date,y=Avg_Withdrawals_mgd)) + 
   geom_line() + 
   geom_smooth(method="loess",se=FALSE) +
-  labs(title = paste("2020 Water usage data for",the_registrant),
+  labs(title = paste(the_year, "Water usage data for",the_registrant),
        subtitle = the_facility_name,
        y="Withdrawal (mgd)",
        x="Date")
@@ -247,6 +260,8 @@ scrape.it <- function(the_year, the_facility){
   #Pause for a moment - scraping etiquette
   #Sys.sleep(1) #uncomment this if you are doing bulk scraping!
   
+  #tells R to just wait for one second. this is because the server might feel under attacked if you and might limit it. It could cut off access, and they might limit dukes access to certain website (the function about is for etquiette and to avoid this). five seconds might be better
+  
   #Return the dataframe
   return(df_withdrawals)
 }
@@ -271,20 +286,25 @@ the_dfs <- lapply(X = the_years,
                   FUN = scrape.it,
                   the_facility=my_facility)
 
-#OR, use purrr's map function
+# above is saying to repeat this function for every year in the vector (specify the facility). 
+
+#OR, use purrr's map function (tidyverse)
 the_dfs <- map(the_years,scrape.it,the_facility=my_facility)
 
 #Conflate the returned dataframes into a single dataframe
 the_df <- bind_rows(the_dfs)
+
+#combines the data frames into one 
 
 #Plot, because it's fun and rewarding
 ggplot(the_df,aes(x=Date,y=Avg_Withdrawals_mgd)) + 
   geom_line() + 
   geom_smooth(method="loess",se=FALSE) +
   labs(title = paste("2020 Water usage data for",the_registrant),
-       subtitle = the_facility_name,
        y="Withdrawal (mgd)",
        x="Date")
+
+#not the best plot (don't use for HW)
 ```
 
 # Part 3. Web Crawling
@@ -333,6 +353,8 @@ the_years <- rep.int(2020,length(the_facility_ids_subset))
 #"Map" the "scrape.it" function to retrieve data for all these
 dfs_2020 <- map2(the_years, the_facility_ids_subset, scrape.it) 
 
+# iterating between the 20 different facilities 
+
 #Conflate the returned list of dataframes into a single one
 df_2020 <- bind_rows(dfs_2020)
 
@@ -340,6 +362,8 @@ df_2020 <- bind_rows(dfs_2020)
 #Plot
 ggplot(df_2020,aes(y = Avg_Withdrawals_mgd, x=Facility_type)) +
   geom_boxplot()
+
+# you could look at by month by using x = as.factor(month). 
 
 ```
 
