@@ -75,14 +75,13 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3
-water.system.name <- 
+water.system.name <- URL %>% html_nodes('div+ table tr:nth-child(1) td:nth-child(2)') %>% html_text()
   
-pswid <- 
+pswid <-  URL %>% html_nodes('td tr:nth-child(1) td:nth-child(5)') %>% html_text()
   
-ownership <- 
+ownership <-  URL %>% html_nodes('div+ table tr:nth-child(2) td:nth-child(4)') %>% html_text()
   
-max.withdrawals.mgd <- 
-
+max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
 ```
 
 
@@ -95,7 +94,10 @@ max.withdrawals.mgd <-
 5. Create a line plot of the maximum daily withdrawals across the months for 2021
 
 ```{r create.a.dataframe.from.scraped.data}
-#4
+#4 
+
+withdrawal_df <- Data.frame("Month" = rep(1:12))
+                            
 
 
 
