@@ -1,6 +1,6 @@
 ---
 title: "Assignment 09: Data Scraping"
-author: "Student Name"
+author: "Melissa Merritt"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -28,8 +28,20 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r, message = FALSE}
 #1
+getwd() #use to check working directory
 
+library(tidyverse)
+library(rvest)
+library(lubridate)
 
+# Use the library() functions to load the packages that we need. 
+
+mytheme <- theme_bw(base_size = 12) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top") 
+theme_set(mytheme)
+
+# I use the theme_bw() and theme() functions to define my theme. The theme_set() function allows me to set my theme for the entire document. 
 ```
 
 2. We will be scraping data from the NC DEQs Local Water Supply Planning website, specifically the Durham's 2021 Municipal Local Water Supply Plan (LWSP): 
@@ -42,7 +54,9 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 ```{r set.the.scraping.website}
 #2
 
+URL <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2021')
 
+# Using the read_html() function allows us to read in the url as a webpage object. 
 ```
 
 3. The data we want to collect are listed below:
