@@ -33,6 +33,7 @@ getwd() #use to check working directory
 library(tidyverse)
 library(rvest)
 library(lubridate)
+library(viridis)
 
 # Use the library() functions to load the packages that we need. 
 
@@ -96,14 +97,23 @@ max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
 ```{r create.a.dataframe.from.scraped.data}
 #4 
 
-withdrawal_df <- Data.frame("Month" = rep(1:12))
+withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Mar","Jul","Nov","Apr","Aug","Dec"),
+                            "Year" = rep(2021),
+                            "Water.System" = rep(water.system.name), 
+                            "PSWID" = rep(pswid), 
+                            "Ownership" = rep(ownership), 
+                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd) %>%
+  mutate(Date = my(paste(Month,"-",Year)))
                             
-
-
+# To create the data frame with these values, we can use the data.frame() function. Within this function, we can set the column names in the quotation marks, and set them equal to the scraped values. We can also make a month and year column using the rep() function to repeat the values, and for the month column we can manually add each of the months in to match the max.withdrawals. The last column we add is the month-year column using the mutate() function and the lubridate package my() function.  
 
 #5
 
+Max.withdrawals.plot <- ggplot(withdrawal_df, aes(x=Date, y=Maximum.Daily.Use.mgd)) +
+  geom_line(aes(group=1)) 
+print(Max.withdrawals.plot)
 
+#
 
 ```
 
@@ -112,6 +122,10 @@ withdrawal_df <- Data.frame("Month" = rep(1:12))
 ```{r construct.a.scraping.function}
 #6.
 
+scrape.it <- function(the_year, pwsid)
+  
+the_website <- read_html(paste0(https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid= 
+                                  'pwsid'&year='the_year'))
 
 
 ```
