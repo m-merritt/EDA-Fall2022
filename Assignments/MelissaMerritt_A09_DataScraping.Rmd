@@ -122,11 +122,26 @@ print(Max.withdrawals.plot)
 ```{r construct.a.scraping.function}
 #6.
 
-scrape.it <- function(the_year, pwsid)
-  
-the_website <- read_html(paste0(https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid= 
-                                  'pwsid'&year='the_year'))
+scrape.it <- function(the_year, pwsid){
+the_website <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=',pwsid,'&year=',the_year,))
 
+
+water.system.name <- URL %>% html_nodes('div+ table tr:nth-child(1) td:nth-child(2)') %>% html_text()
+ownership <-  URL %>% html_nodes('div+ table tr:nth-child(2) td:nth-child(4)') %>% html_text()
+max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
+
+
+withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Mar","Jul","Nov","Apr","Aug","Dec"),
+                            "Year" = rep(2021),
+                            "Water.System" = rep(water.system.name), 
+                            "PSWID" = rep(pswid), 
+                            "Ownership" = rep(ownership), 
+                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd) %>%
+  mutate(Date = my(paste(Month,"-",Year)))
+  
+
+  
+  return(withdrawal_df)}
 
 ```
 
