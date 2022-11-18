@@ -34,6 +34,7 @@ library(tidyverse)
 library(rvest)
 library(lubridate)
 library(viridis)
+library(scales)
 
 # Use the library() functions to load the packages that we need. 
 
@@ -173,7 +174,11 @@ view(Asheville2015_df)
 Combined_df <- rbind(Asheville2015_df, Durham2015_df)
 
 Max.withdrawals.plot_DurhamAsheville2015 <- ggplot(Combined_df, aes(x=Date, y=Maximum.Daily.Use.mgd, color = Water.System)) +
-  geom_line() 
+  geom_line() +
+  scale_x_date(date_breaks = "1 month", labels = date_format("%m-%Y")) +
+  theme(axis.text.x=element_text(angle = 90))+
+  ylab("Maximum Daily Withdrawals") +
+  labs(color = "Water System")
 print(Max.withdrawals.plot_DurhamAsheville2015)
 
 ```
