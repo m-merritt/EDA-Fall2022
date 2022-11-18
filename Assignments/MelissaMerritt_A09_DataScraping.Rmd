@@ -83,6 +83,8 @@ pswid <-  URL %>% html_nodes('td tr:nth-child(1) td:nth-child(5)') %>% html_text
 ownership <-  URL %>% html_nodes('div+ table tr:nth-child(2) td:nth-child(4)') %>% html_text()
   
 max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
+
+# To scrape the data we can use the pipe function with the URL, and then html_nodes() function with the location on the website, and then use the html_text() function to receive the test values.
 ```
 
 
@@ -96,19 +98,17 @@ max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
-
 withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Mar","Jul","Nov","Apr","Aug","Dec"),
                             "Year" = rep(2021),
-                            "Water.System" = rep(water.system.name), 
-                            "PSWID" = rep(pswid), 
-                            "Ownership" = rep(ownership), 
-                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd) %>%
-  mutate(Date = my(paste(Month,"-",Year)))
+                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd)) %>%
+  mutate(Water.System = !! water.system.name, 
+          PSWID = !! pswid, 
+          Ownership = !! ownership, 
+    Date = my(paste(Month,"-",Year)))
                             
-# To create the data frame with these values, we can use the data.frame() function. Within this function, we can set the column names in the quotation marks, and set them equal to the scraped values. We can also make a month and year column using the rep() function to repeat the values, and for the month column we can manually add each of the months in to match the max.withdrawals. The last column we add is the month-year column using the mutate() function and the lubridate package my() function.  
+# To create the data frame with these values, we can use the data.frame() function. The first step in creating this function is to set the months up, and to do this we need to manually add the months to match the data from the website. Then we need to set the year using the rep() function. We can also set the max daily use as a numeric using the as.numeric() function for the values. Using the pipe and mutate functions we can add the rest of the columns. The !! points to the variable, and the my() function can create a new column with the month and year. 
 
 #5
-
 Max.withdrawals.plot <- ggplot(withdrawal_df, aes(x=Date, y=Maximum.Daily.Use.mgd)) +
   geom_line(aes(group=1)) 
 print(Max.withdrawals.plot)
@@ -121,27 +121,25 @@ print(Max.withdrawals.plot)
 
 ```{r construct.a.scraping.function}
 #6.
-
 scrape.it <- function(the_year, pwsid){
+  
 the_website <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=',pwsid,'&year=',the_year,))
-
 
 water.system.name <- URL %>% html_nodes('div+ table tr:nth-child(1) td:nth-child(2)') %>% html_text()
 ownership <-  URL %>% html_nodes('div+ table tr:nth-child(2) td:nth-child(4)') %>% html_text()
 max.withdrawals.mgd <- URL %>% html_nodes('th~ td+ td') %>% html_text()
 
-
 withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Mar","Jul","Nov","Apr","Aug","Dec"),
                             "Year" = rep(2021),
-                            "Water.System" = rep(water.system.name), 
-                            "PSWID" = rep(pswid), 
-                            "Ownership" = rep(ownership), 
-                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd) %>%
-  mutate(Date = my(paste(Month,"-",Year)))
-  
+                            "Maximum.Daily.Use.mgd" = as.numeric(max.withdrawals.mgd)) %>%
+  mutate(Water.System = !! water.system.name, 
+          PSWID = !! pswid, 
+          Ownership = !! ownership, 
+    Date = my(paste(Month,"-",Year)))
 
-  
-  return(withdrawal_df)}
+return(withdrawal_df)}
+
+# In order to create the scrape.it function we can 
 
 ```
 
@@ -149,6 +147,8 @@ withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Ma
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7
+
+ggplot(withdrawal_df, aes(x=))
 
 
 ```
