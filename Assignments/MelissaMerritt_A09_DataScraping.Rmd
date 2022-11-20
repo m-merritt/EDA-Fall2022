@@ -38,9 +38,10 @@ library(scales)
 
 # Use the library() functions to load the packages that we need. 
 
-mytheme <- theme_bw(base_size = 12) +
+mytheme <- theme_bw(base_size = 10) +
   theme(axis.text = element_text(color = "black"), 
-        legend.position = "top") 
+        legend.position = "top", 
+        axis.text.x=element_text(angle = 90)) 
 theme_set(mytheme)
 
 # I use the theme_bw() and theme() functions to define my theme. The theme_set() function allows me to set my theme for the entire document. 
@@ -111,10 +112,12 @@ withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Ma
 
 #5
 Max.withdrawals.plot <- ggplot(withdrawal_df, aes(x=Date, y=Maximum.Daily.Use.mgd)) +
-  geom_line(aes(group=1)) 
+  geom_line() +
+  ylab("Maximum Daily Withdrawals (mgd)") +
+  scale_x_date(date_breaks = "1 month", labels = date_format("%m-%Y")) 
 print(Max.withdrawals.plot)
 
-#
+# To create this plot we can use the ggplot() function. Within this function we can define the data frame we are using as well as the x and y values using aes(). We can specify that we want a line graph using the function geom_line(). Using the ylab() we can label the y-axis. The scale_x_date() function allows us to include each month in the y-axis labeling to make the graph more clear. Finally, we use the print() function to view the graph.
 
 ```
 
@@ -140,9 +143,7 @@ withdrawal_df <- data.frame("Month" = c("Jan","May","Sept","Feb","Jun","Oct","Ma
 
 return(withdrawal_df)}
 
-
-# In order to create the scrape.it function we can 
-
+# In order to create the scrape.it function we first set the variables that are changing in the function() brackets. Then we need to define the function first using the read_html() function to read in the website URL that has the variables defined as the ones we set. Then we can copy the scraping and dataframe functions from above. The differences were just that we needed to make both pwsid and the year apart of the function instead of defining it as a variable with the !!. The last step is to use the return() function to define the new function.
 ```
 
 7. Use the function above to extract and plot max daily withdrawals for Durham (PWSID='03-32-010') for each month in 2015
@@ -153,13 +154,15 @@ return(withdrawal_df)}
 Durham2015_df <- scrape.it(2015, '03-32-010')
 view(Durham2015_df)
 
-# Using the scrape.it() function created above, we can 
+# Using the scrape.it() function created above, we can create a new dataframe with the data for Durham in 2015. We can use the view() function to see the dataframe.
 
 Max.withdrawals.plot_Durham2015 <- ggplot(Durham2015_df, aes(x=Date, y=Maximum.Daily.Use.mgd)) +
-  geom_line(aes(group=1)) 
+  geom_line() +
+  ylab("Maximum Daily Withdrawals (mgd)") +
+  scale_x_date(date_breaks = "1 month", labels = date_format("%m-%Y")) 
 print(Max.withdrawals.plot_Durham2015)
 
-# 
+# To plot the values we can use the ggplot() function to define the dataframe we are using and the x and y values. We can use the geom_line() function to specify that we want a line plot. Using the ylab() function allows us to label the y axis. The scale_x_date() function allows us to include each month in the y-axis labeling to make the graph more clear. Finally, we use the print() function to view the graph.
 
 ```
 
@@ -171,16 +174,20 @@ print(Max.withdrawals.plot_Durham2015)
 Asheville2015_df <- scrape.it(2015, '01-11-010')
 view(Asheville2015_df)
 
+# Using the scrape.it() function created above, we can create a new dataframe with the data for Asheville in 2015. We can use the view() function to see the dataframe.
+
 Combined_df <- rbind(Asheville2015_df, Durham2015_df)
+
+# To combine the two dataframes we can use the rbind() function which combines the rows. 
 
 Max.withdrawals.plot_DurhamAsheville2015 <- ggplot(Combined_df, aes(x=Date, y=Maximum.Daily.Use.mgd, color = Water.System)) +
   geom_line() +
   scale_x_date(date_breaks = "1 month", labels = date_format("%m-%Y")) +
-  theme(axis.text.x=element_text(angle = 90))+
-  ylab("Maximum Daily Withdrawals") +
+  ylab("Maximum Daily Withdrawals (mgd)") +
   labs(color = "Water System")
 print(Max.withdrawals.plot_DurhamAsheville2015)
 
+# We can use the ggplot() function to plot the data from the combined data frame. We can use the aes() function to specify the x and y values and that the lines will be plotted in different colors based on the water.system. We use the geom_line() function to specify that we want a line plot. The scale_x_date() function allows us to include each month in the y-axis labeling to make the graph more clear. We use the ylab() and lab() functions to specify the labels for the y axis and the legend. Finally, we use the print() function to view the graph.
 ```
 
 
@@ -194,14 +201,21 @@ print(Max.withdrawals.plot_DurhamAsheville2015)
 the_years = rep(2010:2019)
 my_pwsid = '01-11-010'
 
+# We can set the values of our variables using the equal sign.
+
 Asheville1019_dfs <- map2(the_years,my_pwsid,scrape.it) %>% bind_rows()
+
+# To create the dataframe we can use the map2() function since we have a two argument case, and within this function we can specify the two variables we are using and the scrape.it function we made. Then using the pipe function %>% we can use the bind_rows() function to combine all of the variables. 
 
 Asheville1019_plot <- ggplot(Asheville1019_dfs, aes(x=Date, y=Maximum.Daily.Use.mgd)) +
   geom_line() +
-  geom_smooth(method="loess",se=FALSE)
+  ylab("Maximum Daily Withdrawals (mgd)") +
+  geom_smooth(method="loess",se=FALSE) +
+  scale_x_date(date_breaks = "1 year", labels = date_format("%Y"))
 print(Asheville1019_plot)
 
-#
+# Using the ggplot() function we can define the dataset that we want to plot using the aes() function to specify the x and y values.  We use the geom_line() function to specify that we want a line plot. we can use the ylab() function to label the y axis. The geom_smooth() function allows us to add a smoothed line to the graph, and within this function we can define the method as "loess" so it follows the line graph, and the se=FALSE gets rid of the confidence interval. The scale_x_date() function allows us to include each month in the y-axis labeling to make the graph more clear. Finally, we use the print() function to view the graph.
 ```
 
->Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
+>Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time? 
+> Just looking at the graph it does appear that Asheville's water usage was relatively even until it spiked up in 2019, so it does look like it may start having an increasing trend.
